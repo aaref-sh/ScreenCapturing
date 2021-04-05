@@ -1,103 +1,100 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Drawing.Imaging;
-using System.Diagnostics;
-using System.IO;
-using System.Security.Cryptography;
-using System.Threading;
-using System.Runtime.InteropServices;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using ScreenCapturing.classes;
-using Microsoft.AspNetCore.SignalR.Client;
+using System;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace ScreenCapturing
 {
     public partial class Form1 : Form
     {
         HubConnection connection;
-        Bitmap[,] sa = new Bitmap[2,3];
-        Bitmap[,] prev = new Bitmap[2,3];
+        Bitmap[,] sa = new Bitmap[5, 6];
+        Bitmap[,] prev = new Bitmap[5, 6];
         int height, width;
         public Form1()
         {
-
             InitializeComponent();
             updatesize();
             ConfigSignalRConnection();
-            encoderParameters.Param[0] = new EncoderParameter(Encoder.Quality, 100L);
         }
-
+        void updatesize()
+        {
+            height = this.Height;
+            width = this.Width;
+        }
         private async void ConfigSignalRConnection()
         {
             connection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5000/CastHub")
                 .WithAutomaticReconnect()
                 .Build();
-            connection.On<string,int,int>("UpdateScreen", UpdateScreen);
+            connection.On<string, int, int>("UpdateScreen", UpdateScreen);
             await connection.StartAsync();
+            await connection.InvokeAsync("AddToGroup", "main");
             //MessageBox.Show( await connection.InvokeAsync<string>("ok"));
         }
 
-        private void UpdateScreen(string base64,int r,int c)
+        private void UpdateScreen(string base64, int r, int c)
         {
             Image.FromStream(new MemoryStream(Convert.FromBase64String(base64)))
-                .Save("D:\\sc\\sc"+r+" "+c+".jpg");
+                .Save("D:\\sc\\sc" + r + " " + c + ".jpg");
         }
-        private readonly Stopwatch sw = new Stopwatch();
-        private Bitmap CaptureImage(int x, int y, int i, int j)
+        private Bitmap CaptureImage()
         {
             Bitmap b = new Bitmap(width, height);
             using (Graphics g = Graphics.FromImage(b))
-                g.CopyFromScreen(x + width * j, y + height * i, 0, 0, b.Size, CopyPixelOperation.SourceCopy);
-
+                g.CopyFromScreen(this.Left, this.Top, 0, 0, b.Size, CopyPixelOperation.SourceCopy);
             return b;
         }
-        EncoderParameters encoderParameters = new EncoderParameters(1);
-
+        public void SendUpdates(Bitmap src)
+        {
+            int wdt = src.Width / 6, hgt = src.Height / 5;
+            for(int i=0;i<5;i++)
+                for(int j = 0; j < 6; j++)
+                {
+                    Rectangle r = new Rectangle(new Point(j*wdt, i*hgt), new Size(wdt, hgt));
+                    sa[i,j] = new Bitmap(wdt,hgt);
+                    using (Graphics g = Graphics.FromImage(sa[i,j]))
+                        g.DrawImage(src, 0, 0, r, GraphicsUnit.Pixel);
+                    if (!Compare(sa[i, j], prev[i, j]))
+                    {
+                        try
+                        {
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                sa[i,j].Save(ms, ImageFormat.Jpeg);
+                                string base64 = Convert.ToBase64String(ms.ToArray());
+                                connection.InvokeAsync("UpdateScreen", base64,i,j);
+                            }
+                        }
+                        catch (Exception e) { MessageBox.Show(e.Message); }
+                        prev[i, j] = sa[i, j];
+                    }
+                }
+        }
         public void Cap()
         {
             try
             {
-                for (int i = 0; i < 2; i++)
-                    for (int j = 0; j < 3; j++)
-                    {
-                        //   sa[i, j] = GetDesktopImage(i,j);
-                        sa[i, j] = CaptureImage(this.Left, this.Top, i, j);
-                        if (!Compare(prev[i, j], sa[i, j]))
-                        {
-                            try
-                            {
-                                using (MemoryStream ms = new MemoryStream())
-                                {
-                                    sa[i, j].Save(ms, ImageFormat.Jpeg);
-                                    string base64 = Convert.ToBase64String(ms.ToArray());
-                                    connection.InvokeAsync("UpdateScreen", base64, i, j);
-                                }
-                            }
-                            catch (Exception e) { MessageBox.Show(e.Message); }
-                            prev[i, j] = sa[i, j];
-                        }
-                    }
+                SendUpdates(CaptureImage());
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            catch (Exception e) { Console.WriteLine(e); }
 
         }
         Thread caster = null;
         private void button1_Click(object sender, EventArgs e)
         {
-            var d = DateTime.Now;
-            sw.Start();
             caster = new Thread(cast);
             caster.Start();
-            sw.Stop();
-            MessageBox.Show((DateTime.Now - d).ToString());
         }
         void cast()
         {
-            while(connection.State == HubConnectionState.Connected)
+            while (connection.State == HubConnectionState.Connected)
                 Cap();
         }
         private void button2_Click(object sender, EventArgs e)
@@ -133,7 +130,7 @@ namespace ScreenCapturing
             Marshal.Copy(bitmapData1.Scan0, b1bytes, 0, bytes);
             Marshal.Copy(bitmapData2.Scan0, b2bytes, 0, bytes);
 
-            for (int n = 0; n <= bytes - 1; n++)
+            for (long n = 0; n <= bytes - 1; n++)
             {
                 if (b1bytes[n] != b2bytes[n])
                 {
@@ -171,11 +168,6 @@ namespace ScreenCapturing
             }
             this.Cursor = Cursors.Default;
         }
-        void updatesize()
-        {
-            height = this.Height / 2;
-            width = this.Width / 3;
-        }
         int posX;
         int posY;
         bool drag;
@@ -183,6 +175,54 @@ namespace ScreenCapturing
         {
             this.Cursor = Cursors.SizeNWSE;
         }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label2_MouseEnter(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.SizeWE;
+        }
+
+        private void label2_MouseLeave(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.Default;
+        }
+
+        private void label3_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (drag)
+                this.Width = Cursor.Position.X - this.Left;
+        }
+
+        private void label1_MouseEnter(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.SizeNS;
+        }
+
+        private void label1_MouseLeave(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.Default;
+        }
+
+        private void label1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (drag)
+                this.Height = Cursor.Position.Y - this.Top;
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                caster.Abort();
+            }
+            catch { }
+            this.Close();
+        }
+
         private void l2_MouseLeave(object sender, EventArgs e)
         {
             this.Cursor = Cursors.Default;
@@ -196,20 +236,22 @@ namespace ScreenCapturing
             }
         }
         #endregion
-   
-        public Bitmap GetDesktopImage(int i,int j) {
-            IntPtr hDC = WIN32_API.GetDC(WIN32_API.GetDesktopWindow()); 
-            IntPtr hMemDC = WIN32_API.CreateCompatibleDC(hDC); 
-            m_HBitmap = WIN32_API.CreateCompatibleBitmap(hDC, width, height); 
-            if (m_HBitmap != IntPtr.Zero) { 
+
+        public Bitmap GetDesktopImage(int i, int j)
+        {
+            IntPtr hDC = WIN32_API.GetDC(WIN32_API.GetDesktopWindow());
+            IntPtr hMemDC = WIN32_API.CreateCompatibleDC(hDC);
+            m_HBitmap = WIN32_API.CreateCompatibleBitmap(hDC, width, height);
+            if (m_HBitmap != IntPtr.Zero)
+            {
                 IntPtr hOld = (IntPtr)WIN32_API.SelectObject(hMemDC, m_HBitmap);
-                WIN32_API.BitBlt(hMemDC, 0, 0, width, height, hDC, this.Left+width*j, this.Top+height*i, WIN32_API.SRCCOPY); 
-                WIN32_API.SelectObject(hMemDC, hOld); WIN32_API.DeleteDC(hMemDC); 
-                WIN32_API.ReleaseDC(WIN32_API.GetDesktopWindow(), hDC); 
-                return Image.FromHbitmap(m_HBitmap); 
-            } 
-            return null; 
-        } 
-        protected IntPtr m_HBitmap; 
+                WIN32_API.BitBlt(hMemDC, 0, 0, width, height, hDC, this.Left + width * j, this.Top + height * i, WIN32_API.SRCCOPY);
+                WIN32_API.SelectObject(hMemDC, hOld); WIN32_API.DeleteDC(hMemDC);
+                WIN32_API.ReleaseDC(WIN32_API.GetDesktopWindow(), hDC);
+                return Image.FromHbitmap(m_HBitmap);
+            }
+            return null;
+        }
+        protected IntPtr m_HBitmap;
     }
 }
