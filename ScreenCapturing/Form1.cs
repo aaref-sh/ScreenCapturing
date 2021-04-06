@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -15,22 +16,19 @@ namespace ScreenCapturing
         HubConnection connection;
         Bitmap[,] sa = new Bitmap[5, 6];
         Bitmap[,] prev = new Bitmap[5, 6];
-        int height, width;
+        static PixelFormat[] formats = {PixelFormat.Format32bppArgb,PixelFormat.Format24bppRgb,PixelFormat.Format16bppRgb565 };
+        PixelFormat quality = formats[0];
         public Form1()
         {
             InitializeComponent();
-            updatesize();
+            comboBox1.SelectedIndex = 0;
             ConfigSignalRConnection();
-        }
-        void updatesize()
-        {
-            height = this.Height;
-            width = this.Width;
+            this.TopMost = true;
         }
         private async void ConfigSignalRConnection()
         {
             connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5000/CastHub")
+                .WithUrl("http://192.168.1.111:5000/CastHub")
                 .WithAutomaticReconnect()
                 .Build();
             connection.On<string, int, int>("UpdateScreen", UpdateScreen);
@@ -46,20 +44,60 @@ namespace ScreenCapturing
         }
         private Bitmap CaptureImage()
         {
-            Bitmap b = new Bitmap(width, height);
+            Bitmap b = new Bitmap(this.Width, this.Height-23,quality);
             using (Graphics g = Graphics.FromImage(b))
+            {
                 g.CopyFromScreen(this.Left, this.Top, 0, 0, b.Size, CopyPixelOperation.SourceCopy);
+                User32.CURSORINFO cursorInfo;
+                cursorInfo.cbSize = Marshal.SizeOf(typeof(User32.CURSORINFO));
+
+                if (User32.GetCursorInfo(out cursorInfo))
+                {
+                    // if the cursor is showing draw it on the screen shot
+                    if (cursorInfo.flags == User32.CURSOR_SHOWING)
+                    {
+                        // we need to get hotspot so we can draw the cursor in the correct position
+                        var iconPointer = User32.CopyIcon(cursorInfo.hCursor);
+                        User32.ICONINFO iconInfo;
+                        int iconX, iconY;
+
+                        if (User32.GetIconInfo(iconPointer, out iconInfo))
+                        {
+                            // calculate the correct position of the cursor
+                            iconX = cursorInfo.ptScreenPos.x - ((int)iconInfo.xHotspot) - this.Left;
+                            iconY = cursorInfo.ptScreenPos.y - ((int)iconInfo.yHotspot) - this.Top;
+
+                            // draw the cursor icon on top of the captured screen image
+                            User32.DrawIcon(g.GetHdc(), iconX, iconY, cursorInfo.hCursor);
+
+                            // release the handle created by call to g.GetHdc()
+                            g.ReleaseHdc();
+                        }
+                    }
+                }
+            }
             return b;
+        }
+
+        string pass = "mainmain";
+        string cyphered(string s)
+        {
+            //return s;
+            var result = new StringBuilder();
+            for (int c = 0; c < s.Length; c++)
+                result.Append((char)((uint)s[c] ^ (uint)pass[c % pass.Length]));
+            return result.ToString();
         }
         public void SendUpdates(Bitmap src)
         {
-            int wdt = src.Width / 6, hgt = src.Height / 5;
-            for(int i=0;i<5;i++)
-                for(int j = 0; j < 6; j++)
+            int x=6, y=5;
+            int wdt = src.Width / x, hgt = src.Height / y;
+            for (int i = 0; i < y; i++)
+                for (int j = 0; j < x; j++)
                 {
-                    Rectangle r = new Rectangle(new Point(j*wdt, i*hgt), new Size(wdt, hgt));
-                    sa[i,j] = new Bitmap(wdt,hgt);
-                    using (Graphics g = Graphics.FromImage(sa[i,j]))
+                    Rectangle r = new Rectangle(new Point(j * wdt, i * hgt), new Size(wdt, hgt));
+                    sa[i, j] = new Bitmap(wdt, hgt,quality);
+                    using (Graphics g = Graphics.FromImage(sa[i, j]))
                         g.DrawImage(src, 0, 0, r, GraphicsUnit.Pixel);
                     if (!Compare(sa[i, j], prev[i, j]))
                     {
@@ -67,9 +105,9 @@ namespace ScreenCapturing
                         {
                             using (MemoryStream ms = new MemoryStream())
                             {
-                                sa[i,j].Save(ms, ImageFormat.Jpeg);
+                                sa[i, j].Save(ms, ImageFormat.Jpeg);
                                 string base64 = Convert.ToBase64String(ms.ToArray());
-                                connection.InvokeAsync("UpdateScreen", base64,i,j);
+                                connection.InvokeAsync("UpdateScreen", cyphered(base64), i, j);
                             }
                         }
                         catch (Exception e) { MessageBox.Show(e.Message); }
@@ -84,13 +122,14 @@ namespace ScreenCapturing
                 SendUpdates(CaptureImage());
             }
             catch (Exception e) { Console.WriteLine(e); }
+            Thread.Sleep(1000/trackBar1.Value);
 
         }
         Thread caster = null;
         private void button1_Click(object sender, EventArgs e)
         {
-            caster = new Thread(cast);
-            caster.Start();
+            try { caster.Abort(); }
+            catch { caster = new Thread(cast); caster.Start(); }
         }
         void cast()
         {
@@ -157,7 +196,6 @@ namespace ScreenCapturing
         private void l1_MouseUp(object sender, MouseEventArgs e)
         {
             drag = false;
-            updatesize();
         }
         private void l1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -176,11 +214,6 @@ namespace ScreenCapturing
             this.Cursor = Cursors.SizeNWSE;
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void label2_MouseEnter(object sender, EventArgs e)
         {
             this.Cursor = Cursors.SizeWE;
@@ -193,8 +226,7 @@ namespace ScreenCapturing
 
         private void label3_MouseMove(object sender, MouseEventArgs e)
         {
-            if (drag)
-                this.Width = Cursor.Position.X - this.Left;
+            if (drag) this.Width = Cursor.Position.X - this.Left;
         }
 
         private void label1_MouseEnter(object sender, EventArgs e)
@@ -209,16 +241,12 @@ namespace ScreenCapturing
 
         private void label1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (drag)
-                this.Height = Cursor.Position.Y - this.Top;
+            if (drag) this.Height = Cursor.Position.Y - this.Top;
         }
 
         private void label5_Click(object sender, EventArgs e)
         {
-            try
-            {
-                caster.Abort();
-            }
+            try{caster.Abort();}
             catch { }
             this.Close();
         }
@@ -227,6 +255,17 @@ namespace ScreenCapturing
         {
             this.Cursor = Cursors.Default;
         }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            lcastrate.Text = "معدل البث "+trackBar1.Value + "إطار\\ث";
+            /*
+             * r = 1000 / d
+             * d / 1000 = 1 / r
+             * d = 1000 / r
+             */
+        }
+
         private void l2_MouseMove(object sender, MouseEventArgs e)
         {
             if (drag)
@@ -237,21 +276,9 @@ namespace ScreenCapturing
         }
         #endregion
 
-        public Bitmap GetDesktopImage(int i, int j)
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            IntPtr hDC = WIN32_API.GetDC(WIN32_API.GetDesktopWindow());
-            IntPtr hMemDC = WIN32_API.CreateCompatibleDC(hDC);
-            m_HBitmap = WIN32_API.CreateCompatibleBitmap(hDC, width, height);
-            if (m_HBitmap != IntPtr.Zero)
-            {
-                IntPtr hOld = (IntPtr)WIN32_API.SelectObject(hMemDC, m_HBitmap);
-                WIN32_API.BitBlt(hMemDC, 0, 0, width, height, hDC, this.Left + width * j, this.Top + height * i, WIN32_API.SRCCOPY);
-                WIN32_API.SelectObject(hMemDC, hOld); WIN32_API.DeleteDC(hMemDC);
-                WIN32_API.ReleaseDC(WIN32_API.GetDesktopWindow(), hDC);
-                return Image.FromHbitmap(m_HBitmap);
-            }
-            return null;
+            quality = formats[comboBox1.SelectedIndex];
         }
-        protected IntPtr m_HBitmap;
     }
 }
