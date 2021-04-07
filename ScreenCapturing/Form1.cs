@@ -13,15 +13,21 @@ namespace ScreenCapturing
 {
     public partial class Form1 : Form
     {
+        public static PixelFormat quality { set; get; }
+        public static int FPSRate { set; get; }
+        public static bool encrypted { set; get; }
         HubConnection connection;
-        Bitmap[,] sa = new Bitmap[5, 6];
-        Bitmap[,] prev = new Bitmap[5, 6];
-        static PixelFormat[] formats = {PixelFormat.Format32bppArgb,PixelFormat.Format24bppRgb,PixelFormat.Format16bppRgb565 };
-        PixelFormat quality = formats[0];
+        Bitmap[,] sa = new Bitmap[10, 10];
+        Bitmap[,] prev = new Bitmap[10, 10];
+        int x = 10, y = 10;
+        ControlPanel c = new ControlPanel();
+
         public Form1()
         {
             InitializeComponent();
-            comboBox1.SelectedIndex = 0;
+            quality = PixelFormat.Format32bppArgb;
+            FPSRate = 25;
+            encrypted = true;
             ConfigSignalRConnection();
             this.TopMost = true;
         }
@@ -34,6 +40,8 @@ namespace ScreenCapturing
             connection.On<string, int, int>("UpdateScreen", UpdateScreen);
             await connection.StartAsync();
             await connection.InvokeAsync("AddToGroup", "main");
+            await connection.InvokeAsync("teacherconnected");
+
             //MessageBox.Show( await connection.InvokeAsync<string>("ok"));
         }
 
@@ -82,7 +90,7 @@ namespace ScreenCapturing
         string pass = "mainmain";
         string cyphered(string s)
         {
-            //return s;
+            if(!encrypted)return s;
             var result = new StringBuilder();
             for (int c = 0; c < s.Length; c++)
                 result.Append((char)((uint)s[c] ^ (uint)pass[c % pass.Length]));
@@ -90,7 +98,6 @@ namespace ScreenCapturing
         }
         public void SendUpdates(Bitmap src)
         {
-            int x=6, y=5;
             int wdt = src.Width / x, hgt = src.Height / y;
             for (int i = 0; i < y; i++)
                 for (int j = 0; j < x; j++)
@@ -107,7 +114,7 @@ namespace ScreenCapturing
                             {
                                 sa[i, j].Save(ms, ImageFormat.Jpeg);
                                 string base64 = Convert.ToBase64String(ms.ToArray());
-                                connection.InvokeAsync("UpdateScreen", cyphered(base64), i, j);
+                                connection.InvokeAsync("UpdateScreen", cyphered(base64), i, j,encrypted);
                             }
                         }
                         catch (Exception e) { MessageBox.Show(e.Message); }
@@ -115,38 +122,30 @@ namespace ScreenCapturing
                     }
                 }
         }
+        DateTime last = DateTime.Now;
         public void Cap()
         {
-            try
+            if (DateTime.Now - last >= TimeSpan.FromMilliseconds(1000 / FPSRate))
             {
-                SendUpdates(CaptureImage());
+                last = DateTime.Now;
+                try
+                {
+                    SendUpdates(CaptureImage());
+                }
+                catch (Exception e) { Console.WriteLine(e); }
             }
-            catch (Exception e) { Console.WriteLine(e); }
-            Thread.Sleep(1000/trackBar1.Value);
 
         }
         Thread caster = null;
         private void button1_Click(object sender, EventArgs e)
         {
-            try { caster.Abort(); }
-            catch { caster = new Thread(cast); caster.Start(); }
+            caster = new Thread(cast);
+            caster.Start();
         }
         void cast()
         {
             while (connection.State == HubConnectionState.Connected)
                 Cap();
-        }
-        private void button2_Click(object sender, EventArgs e)
-        {
-            caster.Abort();
-        }
-        private static ImageCodecInfo GetEncoder(ImageFormat format)
-        {
-            var codecs = ImageCodecInfo.GetImageDecoders();
-            foreach (var codec in codecs)
-                if (codec.FormatID == format.Guid)
-                    return codec;
-            return null;
         }
         public static bool Compare(Bitmap bmp1, Bitmap bmp2)
         {
@@ -203,42 +202,23 @@ namespace ScreenCapturing
             {
                 this.Top = Cursor.Position.Y - posY;
                 this.Left = Cursor.Position.X - posX;
+                c.Left = this.Right;
+                c.Top = this.Top;
             }
             this.Cursor = Cursors.Default;
         }
         int posX;
         int posY;
         bool drag;
-        private void l2_MouseEnter(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.SizeNWSE;
-        }
-
-        private void label2_MouseEnter(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.SizeWE;
-        }
-
-        private void label2_MouseLeave(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.Default;
-        }
 
         private void label3_MouseMove(object sender, MouseEventArgs e)
         {
-            if (drag) this.Width = Cursor.Position.X - this.Left;
+            if (drag)
+            {
+                this.Width = Cursor.Position.X - this.Left;
+                c.Left = this.Right;
+            }
         }
-
-        private void label1_MouseEnter(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.SizeNS;
-        }
-
-        private void label1_MouseLeave(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.Default;
-        }
-
         private void label1_MouseMove(object sender, MouseEventArgs e)
         {
             if (drag) this.Height = Cursor.Position.Y - this.Top;
@@ -250,35 +230,23 @@ namespace ScreenCapturing
             catch { }
             this.Close();
         }
-
-        private void l2_MouseLeave(object sender, EventArgs e)
-        {
-            this.Cursor = Cursors.Default;
-        }
-
-        private void trackBar1_Scroll(object sender, EventArgs e)
-        {
-            lcastrate.Text = "معدل البث "+trackBar1.Value + "إطار\\ث";
-            /*
-             * r = 1000 / d
-             * d / 1000 = 1 / r
-             * d = 1000 / r
-             */
-        }
-
         private void l2_MouseMove(object sender, MouseEventArgs e)
         {
             if (drag)
             {
                 Width = Cursor.Position.X - this.Left;
                 Height = Cursor.Position.Y - this.Top;
+                c.Left = this.Right;
+                c.Top = this.Top;
             }
+        }
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            c.Show();
+            c.Top = Top;
+            c.Left = Right;
         }
         #endregion
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            quality = formats[comboBox1.SelectedIndex];
-        }
     }
 }
