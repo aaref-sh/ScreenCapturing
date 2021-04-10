@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ScreenCapturing
@@ -96,7 +97,7 @@ namespace ScreenCapturing
                 result.Append((char)((uint)s[c] ^ (uint)pass[c % pass.Length]));
             return result.ToString();
         }
-        public void SendUpdates(Bitmap src)
+        public async Task SendUpdates(Bitmap src)
         {
             int wdt = src.Width / x, hgt = src.Height / y;
             for (int i = 0; i < y; i++)
@@ -114,23 +115,23 @@ namespace ScreenCapturing
                             {
                                 sa[i, j].Save(ms, ImageFormat.Jpeg);
                                 string base64 = Convert.ToBase64String(ms.ToArray());
-                                connection.InvokeAsync("UpdateScreen", cyphered(base64), i, j,encrypted);
+                                await connection.InvokeAsync("UpdateScreen", cyphered(base64), i, j,encrypted);
+                                prev[i, j] = sa[i, j];
                             }
                         }
                         catch (Exception e) { MessageBox.Show(e.Message); }
-                        prev[i, j] = sa[i, j];
                     }
                 }
         }
         DateTime last = DateTime.Now;
-        public void Cap()
+        public async Task Cap()
         {
             if (DateTime.Now - last >= TimeSpan.FromMilliseconds(1000 / FPSRate))
             {
                 last = DateTime.Now;
                 try
                 {
-                    SendUpdates(CaptureImage());
+                    await SendUpdates(CaptureImage());
                 }
                 catch (Exception e) { Console.WriteLine(e); }
             }
@@ -142,10 +143,10 @@ namespace ScreenCapturing
             caster = new Thread(cast);
             caster.Start();
         }
-        void cast()
+        async void cast()
         {
             while (connection.State == HubConnectionState.Connected)
-                Cap();
+                await Cap();
         }
         public static bool Compare(Bitmap bmp1, Bitmap bmp2)
         {
@@ -188,8 +189,8 @@ namespace ScreenCapturing
             if (e.Button == MouseButtons.Left)
             {
                 drag = true;
-                posX = Cursor.Position.X - this.Left;
-                posY = Cursor.Position.Y - this.Top;
+                posX = Cursor.Position.X - Left;
+                posY = Cursor.Position.Y - Top;
             }
         }
         private void l1_MouseUp(object sender, MouseEventArgs e)
@@ -200,10 +201,14 @@ namespace ScreenCapturing
         {
             if (drag)
             {
-                this.Top = Cursor.Position.Y - posY;
-                this.Left = Cursor.Position.X - posX;
-                c.Left = this.Right;
-                c.Top = this.Top;
+                Top = Cursor.Position.Y - posY;
+                Top = Math.Max(Top, 0);
+                Top = Math.Min(Bottom, Screen.PrimaryScreen.Bounds.Height)-Height;
+                Left = Cursor.Position.X - posX;
+                Left = Math.Max(Left, 0);
+                Left = Math.Min(Right, Screen.PrimaryScreen.Bounds.Width)-Width;
+                c.Left = Right;
+                c.Top = Top;
             }
             this.Cursor = Cursors.Default;
         }
@@ -215,13 +220,13 @@ namespace ScreenCapturing
         {
             if (drag)
             {
-                this.Width = Cursor.Position.X - this.Left;
-                c.Left = this.Right;
+                Width = Cursor.Position.X - Left>0?Cursor.Position.X - Left:0;
+                c.Left = Right;
             }
         }
         private void label1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (drag) this.Height = Cursor.Position.Y - this.Top;
+            if (drag) Height = Cursor.Position.Y - Top>0?Cursor.Position.Y -Top:0;
         }
 
         private void label5_Click(object sender, EventArgs e)
@@ -234,12 +239,18 @@ namespace ScreenCapturing
         {
             if (drag)
             {
-                Width = Cursor.Position.X - this.Left;
-                Height = Cursor.Position.Y - this.Top;
-                c.Left = this.Right;
-                c.Top = this.Top;
+                Width = Cursor.Position.X - Left;
+                Height = Cursor.Position.Y - Top;
+                c.Left = Right;
+                c.Top = Top;
             }
         }
+
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+
+        }
+
         private void button2_Click_1(object sender, EventArgs e)
         {
             c.Show();

@@ -129,9 +129,10 @@ namespace ScreenCapturing
             // 
             // button2
             // 
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Image = global::ScreenCapturing.Properties.Resources.gear;
-            this.button2.Location = new System.Drawing.Point(409, -3);
+            this.button2.Location = new System.Drawing.Point(409, -4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(30, 29);
             this.button2.TabIndex = 10;
