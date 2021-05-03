@@ -57,13 +57,13 @@ namespace ScreenCapturing
             // 
             this.l2.BackColor = System.Drawing.Color.White;
             this.l2.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.l2.Location = new System.Drawing.Point(539, 16);
+            this.l2.Location = new System.Drawing.Point(370, 17);
             this.l2.Name = "l2";
             this.l2.Size = new System.Drawing.Size(7, 7);
             this.l2.TabIndex = 3;
-            this.l2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.l1_MouseDown);
-            this.l2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.l2_MouseMove);
-            this.l2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.l1_MouseUp);
+            this.l2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.L1_MouseDown);
+            this.l2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.L2_MouseMove);
+            this.l2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.L1_MouseUp);
             // 
             // label3
             // 
@@ -74,9 +74,9 @@ namespace ScreenCapturing
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(2, 422);
             this.label3.TabIndex = 7;
-            this.label3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.l1_MouseDown);
-            this.label3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.label3_MouseMove);
-            this.label3.MouseUp += new System.Windows.Forms.MouseEventHandler(this.l1_MouseUp);
+            this.label3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.L1_MouseDown);
+            this.label3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Label3_MouseMove);
+            this.label3.MouseUp += new System.Windows.Forms.MouseEventHandler(this.L1_MouseUp);
             // 
             // label4
             // 
@@ -92,13 +92,13 @@ namespace ScreenCapturing
             this.label5.BackColor = System.Drawing.Color.Red;
             this.label5.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(445, 1);
+            this.label5.Location = new System.Drawing.Point(277, 1);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(17, 22);
             this.label5.TabIndex = 8;
             this.label5.Text = "X";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label5.Click += new System.EventHandler(this.label5_Click);
+            this.label5.Click += new System.EventHandler(this.Label5_Click);
             // 
             // panel4
             // 
@@ -119,35 +119,35 @@ namespace ScreenCapturing
             this.panel1.Controls.Add(this.l2);
             this.panel1.Cursor = System.Windows.Forms.Cursors.Default;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(254, 2);
+            this.panel1.Location = new System.Drawing.Point(422, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(546, 24);
+            this.panel1.Size = new System.Drawing.Size(378, 24);
             this.panel1.TabIndex = 9;
-            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.l1_MouseDown);
-            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.l1_MouseMove);
-            this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.l1_MouseUp);
+            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.L1_MouseDown);
+            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.L1_MouseMove);
+            this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.L1_MouseUp);
             // 
             // button2
             // 
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button2.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.Image = global::ScreenCapturing.Properties.Resources.gear;
-            this.button2.Location = new System.Drawing.Point(409, -4);
+            this.button2.Location = new System.Drawing.Point(241, -2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(30, 29);
             this.button2.TabIndex = 10;
             this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            this.button2.Click += new System.EventHandler(this.Button2_Click_1);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(507, 1);
+            this.button1.Location = new System.Drawing.Point(339, 0);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(23, 23);
             this.button1.TabIndex = 6;
             this.button1.Text = "▶";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
             // label1
             // 
@@ -158,9 +158,9 @@ namespace ScreenCapturing
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(800, 2);
             this.label1.TabIndex = 5;
-            this.label1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.l1_MouseDown);
-            this.label1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.label1_MouseMove);
-            this.label1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.l1_MouseUp);
+            this.label1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.L1_MouseDown);
+            this.label1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Label1_MouseMove);
+            this.label1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.L1_MouseUp);
             // 
             // Form1
             // 

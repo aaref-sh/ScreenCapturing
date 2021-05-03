@@ -36,7 +36,11 @@ namespace ScreenCapturing
             this.fpslable = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.percentLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBox1
@@ -66,7 +70,7 @@ namespace ScreenCapturing
             this.trackBar1.RightToLeftLayout = true;
             this.trackBar1.Size = new System.Drawing.Size(149, 45);
             this.trackBar1.TabIndex = 12;
-            this.trackBar1.Value = 25;
+            this.trackBar1.Value = 10;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // label1
@@ -98,7 +102,7 @@ namespace ScreenCapturing
             this.fpslable.Name = "fpslable";
             this.fpslable.Size = new System.Drawing.Size(72, 21);
             this.fpslable.TabIndex = 14;
-            this.fpslable.Text = "25 FPS";
+            this.fpslable.Text = "10 FPS";
             this.fpslable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label3
@@ -117,8 +121,6 @@ namespace ScreenCapturing
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox1.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkBox1.Location = new System.Drawing.Point(165, 158);
             this.checkBox1.Name = "checkBox1";
@@ -129,6 +131,40 @@ namespace ScreenCapturing
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Times New Roman", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(218, 214);
+            this.label4.Name = "label4";
+            this.label4.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.label4.Size = new System.Drawing.Size(63, 17);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "دقة الصورة";
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.Location = new System.Drawing.Point(12, 200);
+            this.trackBar2.Maximum = 100;
+            this.trackBar2.Minimum = 35;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.trackBar2.RightToLeftLayout = true;
+            this.trackBar2.Size = new System.Drawing.Size(149, 45);
+            this.trackBar2.TabIndex = 12;
+            this.trackBar2.Value = 100;
+            this.trackBar2.Scroll += new System.EventHandler(this.trackBar2_Scroll);
+            // 
+            // percentLabel
+            // 
+            this.percentLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.percentLabel.Location = new System.Drawing.Point(50, 228);
+            this.percentLabel.Name = "percentLabel";
+            this.percentLabel.Size = new System.Drawing.Size(72, 21);
+            this.percentLabel.TabIndex = 14;
+            this.percentLabel.Text = "100 %";
+            this.percentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -137,9 +173,12 @@ namespace ScreenCapturing
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.percentLabel);
             this.Controls.Add(this.fpslable);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.trackBar1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "ControlPanel";
@@ -149,6 +188,7 @@ namespace ScreenCapturing
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ControlPanel_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ControlPanel_MouseUp);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -163,5 +203,8 @@ namespace ScreenCapturing
         private System.Windows.Forms.Label fpslable;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.Label percentLabel;
     }
 }

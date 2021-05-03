@@ -17,7 +17,8 @@ namespace ScreenCapturing
         public ControlPanel()
         {
             InitializeComponent();
-            comboBox1.SelectedIndex = 0;
+            comboBox1.SelectedIndex = 2;
+            TopMost = true;
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -67,6 +68,12 @@ namespace ScreenCapturing
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             Form1.encrypted = checkBox1.CheckState == CheckState.Checked;
+        }
+
+        private void trackBar2_Scroll(object sender, EventArgs e)
+        {
+            Form1.percent = trackBar2.Value;
+            percentLabel.Text = trackBar2.Value + " %";
         }
     }
 }

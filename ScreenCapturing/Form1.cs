@@ -17,6 +17,7 @@ namespace ScreenCapturing
         public static PixelFormat quality { set; get; }
         public static int FPSRate { set; get; }
         public static bool encrypted { set; get; }
+        public static int percent = 100 ;
         HubConnection connection;
         Bitmap[,] sa = new Bitmap[10, 10];
         Bitmap[,] prev = new Bitmap[10, 10];
@@ -26,9 +27,9 @@ namespace ScreenCapturing
         public Form1()
         {
             InitializeComponent();
-            quality = PixelFormat.Format32bppArgb;
-            FPSRate = 25;
-            encrypted = true;
+            quality = PixelFormat.Format16bppRgb565;
+            FPSRate = 10;
+            encrypted = false;
             ConfigSignalRConnection();
             this.TopMost = true;
         }
@@ -45,7 +46,16 @@ namespace ScreenCapturing
 
             //MessageBox.Show( await connection.InvokeAsync<string>("ok"));
         }
-
+        public Bitmap Resized(Bitmap bmp)
+        {
+            if(percent == 100)return bmp;
+            double dd = 1.0*bmp.Width / bmp.Height;
+            int width = bmp.Width*percent/100,height=(int)(width/dd);
+            Bitmap result = new Bitmap(width,height,quality );
+            using (Graphics g = Graphics.FromImage(result))
+                g.DrawImage(bmp, 0, 0, width, height);
+            return result;
+        }
         private void UpdateScreen(string base64, int r, int c)
         {
             Image.FromStream(new MemoryStream(Convert.FromBase64String(base64)))
@@ -53,10 +63,10 @@ namespace ScreenCapturing
         }
         private Bitmap CaptureImage()
         {
-            Bitmap b = new Bitmap(this.Width, this.Height-23,quality);
+            Bitmap b = new Bitmap(Width, Height-23,quality);
             using (Graphics g = Graphics.FromImage(b))
             {
-                g.CopyFromScreen(this.Left, this.Top, 0, 0, b.Size, CopyPixelOperation.SourceCopy);
+                g.CopyFromScreen(Left,Top, 0, 0, new Size(Width,Height-23), CopyPixelOperation.SourceCopy);
                 User32.CURSORINFO cursorInfo;
                 cursorInfo.cbSize = Marshal.SizeOf(typeof(User32.CURSORINFO));
 
@@ -85,28 +95,28 @@ namespace ScreenCapturing
                     }
                 }
             }
-            return b;
+            return Resized(b);
         }
 
-        string pass = "mainmain";
-        string cyphered(string s)
+        static string pass = "mainmain";
+        public static string xorIt(string input)
         {
-            if(!encrypted)return s;
-            var result = new StringBuilder();
-            for (int c = 0; c < s.Length; c++)
-                result.Append((char)((uint)s[c] ^ (uint)pass[c % pass.Length]));
-            return result.ToString();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < input.Length; i++)
+                sb.Append((char)(input[i] ^ pass[(i % pass.Length)]));
+            return sb.ToString();
         }
-        public async Task SendUpdates(Bitmap src)
+        public async Task SendUpdates()
         {
+            Bitmap src = CaptureImage();
             int wdt = src.Width / x, hgt = src.Height / y;
             for (int i = 0; i < y; i++)
+            {
                 for (int j = 0; j < x; j++)
                 {
+
                     Rectangle r = new Rectangle(new Point(j * wdt, i * hgt), new Size(wdt, hgt));
-                    sa[i, j] = new Bitmap(wdt, hgt,quality);
-                    using (Graphics g = Graphics.FromImage(sa[i, j]))
-                        g.DrawImage(src, 0, 0, r, GraphicsUnit.Pixel);
+                    sa[i, j] = src.Clone(r, src.PixelFormat);
                     if (!Compare(sa[i, j], prev[i, j]))
                     {
                         try
@@ -115,13 +125,15 @@ namespace ScreenCapturing
                             {
                                 sa[i, j].Save(ms, ImageFormat.Jpeg);
                                 string base64 = Convert.ToBase64String(ms.ToArray());
-                                await connection.InvokeAsync("UpdateScreen", cyphered(base64), i, j,encrypted);
+                                if(encrypted) base64 = xorIt(base64.Substring(0, 200)) + base64.Substring(200);
+                                await connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
                                 prev[i, j] = sa[i, j];
                             }
                         }
                         catch (Exception e) { MessageBox.Show(e.Message); }
                     }
                 }
+            }
         }
         DateTime last = DateTime.Now;
         public async Task Cap()
@@ -131,19 +143,19 @@ namespace ScreenCapturing
                 last = DateTime.Now;
                 try
                 {
-                    await SendUpdates(CaptureImage());
+                    await SendUpdates();
                 }
                 catch (Exception e) { Console.WriteLine(e); }
             }
 
         }
         Thread caster = null;
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
-            caster = new Thread(cast);
+            caster = new Thread(Cast);
             caster.Start();
         }
-        async void cast()
+        async void Cast()
         {
             while (connection.State == HubConnectionState.Connected)
                 await Cap();
@@ -184,7 +196,7 @@ namespace ScreenCapturing
             return result;
         }
         #region resize and drag
-        private void l1_MouseDown(object sender, MouseEventArgs e)
+        private void L1_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -193,11 +205,11 @@ namespace ScreenCapturing
                 posY = Cursor.Position.Y - Top;
             }
         }
-        private void l1_MouseUp(object sender, MouseEventArgs e)
+        private void L1_MouseUp(object sender, MouseEventArgs e)
         {
             drag = false;
         }
-        private void l1_MouseMove(object sender, MouseEventArgs e)
+        private void L1_MouseMove(object sender, MouseEventArgs e)
         {
             if (drag)
             {
@@ -216,7 +228,7 @@ namespace ScreenCapturing
         int posY;
         bool drag;
 
-        private void label3_MouseMove(object sender, MouseEventArgs e)
+        private void Label3_MouseMove(object sender, MouseEventArgs e)
         {
             if (drag)
             {
@@ -224,18 +236,18 @@ namespace ScreenCapturing
                 c.Left = Right;
             }
         }
-        private void label1_MouseMove(object sender, MouseEventArgs e)
+        private void Label1_MouseMove(object sender, MouseEventArgs e)
         {
             if (drag) Height = Cursor.Position.Y - Top>0?Cursor.Position.Y -Top:0;
         }
 
-        private void label5_Click(object sender, EventArgs e)
+        private void Label5_Click(object sender, EventArgs e)
         {
             try{caster.Abort();}
             catch { }
             this.Close();
         }
-        private void l2_MouseMove(object sender, MouseEventArgs e)
+        private void L2_MouseMove(object sender, MouseEventArgs e)
         {
             if (drag)
             {
@@ -246,12 +258,7 @@ namespace ScreenCapturing
             }
         }
 
-        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        {
-
-        }
-
-        private void button2_Click_1(object sender, EventArgs e)
+        private void Button2_Click_1(object sender, EventArgs e)
         {
             c.Show();
             c.Top = Top;
