@@ -67,6 +67,9 @@
     <Reference Include="DarrenLee.LiveStream">
       <HintPath>C:\Users\Muhammad\Desktop\DarrenLee.LiveStream.dll</HintPath>
     </Reference>
+    <Reference Include="Emoji.Wpf, Version=0.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emoji.Wpf.0.3.3\lib\net40\Emoji.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Connections.Abstractions, Version=5.0.4.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Connections.Abstractions.5.0.4\lib\net461\Microsoft.AspNetCore.Connections.Abstractions.dll</HintPath>
     </Reference>
@@ -118,6 +121,8 @@
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -207,6 +212,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -223,17 +229,26 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Users\Muhammad\Desktop\this to be\TCPStreamer\TCPStreamer\bin\Debug\TCPServer.dll</HintPath>
     </Reference>
+    <Reference Include="Typography.GlyphLayout, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emoji.Wpf.0.3.3\lib\net40\Typography.GlyphLayout.dll</HintPath>
+    </Reference>
+    <Reference Include="Typography.OpenFont, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emoji.Wpf.0.3.3\lib\net40\Typography.OpenFont.dll</HintPath>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
     <Reference Include="WinSound, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Users\Muhammad\Desktop\this to be\TCPStreamer\TCPStreamer\bin\Debug\WinSound.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Chat.cs">
+    <Compile Include="ChatForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Chat.Designer.cs">
-      <DependentUpon>Chat.cs</DependentUpon>
+    <Compile Include="ChatForm.Designer.cs">
+      <DependentUpon>ChatForm.cs</DependentUpon>
     </Compile>
     <Compile Include="classes\mousedrawer.cs" />
     <Compile Include="ControlPanel.cs">
@@ -250,8 +265,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Chat.resx">
-      <DependentUpon>Chat.cs</DependentUpon>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="WPFChatForm.xaml.cs">
+      <DependentUpon>WPFChatForm.xaml</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="ChatForm.resx">
+      <DependentUpon>ChatForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel.resx">
       <DependentUpon>ControlPanel.cs</DependentUpon>
@@ -261,14 +284,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -294,11 +312,15 @@
   <ItemGroup>
     <None Include="Resources\gear.png" />
     <None Include="Resources\cast.png" />
-    <None Include="Resources\m.jpg" />
-    <None Include="Resources\um.jpg" />
-    <None Include="Resources\sm.jpg" />
-    <None Include="Resources\su.jpg" />
     <None Include="Resources\ic_menu_send.png" />
+    <Content Include="ic_menu_send.png" />
+    <None Include="Resources\Race5b6ada15b7f741d0a45499d679626.png" />
+    <None Include="Resources\settings.png" />
+    <None Include="Resources\close.png" />
+    <Content Include="Resources\m.png" />
+    <Content Include="Resources\sm.png" />
+    <Content Include="Resources\su.png" />
+    <Content Include="Resources\um.png" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -308,6 +330,12 @@
       <Project>{d993c4e5-26a7-4ec8-9a26-fef8efe1a04c}</Project>
       <Name>TCPStreamClient</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="WPFChatForm.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

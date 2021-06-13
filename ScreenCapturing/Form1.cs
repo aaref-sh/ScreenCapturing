@@ -24,8 +24,9 @@ namespace ScreenCapturing
         Bitmap[,] prev = new Bitmap[10, 10];
         int x = 10, y = 10;
         ControlPanel c = new ControlPanel();
-
+        ChatForm chat;
         StreamClient sc;
+        bool chatting = false;
         int port;
         bool mic_muted = false;
         string group;
@@ -46,7 +47,6 @@ namespace ScreenCapturing
                 .WithAutomaticReconnect()
                 .Build();
             await connection.StartAsync();
-            chat = new Chat();
             // await connection.InvokeAsync<int>("getport","ss");
             group = await connection.InvokeAsync<string>("teacherconnected");
             await connection.InvokeAsync("AddToGroup", group);
@@ -178,6 +178,7 @@ namespace ScreenCapturing
         int posX;
         int posY;
         bool drag;
+
         private void Label3_MouseMove(object sender, MouseEventArgs e)
         {
             if (drag)
@@ -206,7 +207,7 @@ namespace ScreenCapturing
                 c.Top = Top;
             }
         }
-        private void Button2_Click_1(object sender, EventArgs e)
+        private void settingsbtn_Click(object sender, EventArgs e)
         {
             c.Show();
             c.Top = Top;
@@ -221,9 +222,13 @@ namespace ScreenCapturing
             speaker_muted = !speaker_muted;
             sc.speakertougle();
         }
-        Chat chat;
         private void btnchat_Click(object sender, EventArgs e)
         {
+            if (!chatting) 
+            { 
+                chatting = true;
+                chat = new ChatForm();
+            }
             chat.Show();
         }
 
