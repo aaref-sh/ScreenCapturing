@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Microsoft.AspNetCore.SignalR.Client;
-using Emoji.Wpf;
 using TextBlock = Emoji.Wpf.TextBlock;
 
 namespace ScreenCapturing
@@ -16,17 +13,9 @@ namespace ScreenCapturing
     /// </summary>
     public partial class WPFChatForm : UserControl
     {
-        string sendpic = "iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAQAAAD9CzEMAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAEgAAABIAEbJaz4AAAAJdnBBZwAAADAAAAAwAM7ujFcAAAQjSURBVFjD7Zbba9xFFMe/Z2Y32e79kottmkQNsWklKYpQCqEUraBYCRQxouBDEZ/Fv8AXX8TYJBZ8iUiDjSiFNiAUCfgqmpRkN9bdbaCkjdlLmuz+9pbrzhwfQmzc/W2ySSwo5Lz9fsx8P+c2ZwY4tEP7zxvt8I+fPJwOLiJNvPehG0frVpcLgJX0ASFmgO72V33PzbeQqy6fPzDEDPBsZ8dtf4MvcjzRKlyBQr4A1JLaJ6R0m4BGl+vtSMMxXhTXNq5mZ2Mi7LmbihGclN9H4ansm8Vx/e7tttegWFJKDG98WbgfE2FPKBUHu/YMEeW/zqSQDTGgScGnPpIT3oETz7yc7hWv+5pyYHbuqbtMlrKgS++fu2ZjJjA0BBMZ4roayM3EKeIOGjGwm3JVRlIGIGJG96meca9dMRHwNyQrRlR/LhqniCuUma8WUh6BgMbJI+8Ej7ZrTVsZ3ILkxYjqz4UTFHEFM/NgL2V2gZTXgAF7aiUzyaDHOwkSIAWH+pDGvV+3P38+2yvecDcbYPbuWBNTwOU0jGm9HbAdYleX6VfvN+1d53O94qKrJb4jpBL7zZ5XbtlZmzYBNCQTrYgb6kphMkFR+9TEXAf7KW2SLvNpyjjTfOmu31XcLLOZaRCIVsVN1Ze/k6SoPTg2d1Y3IVYFQECj3fLeWPNLWAZBoKZkGUPCCqGhBROtiVH1eWE8Ke7pSTyoMgJy8EVPm83KzLBQvaUUYCM7NTmG7DYuQjLRqvhRDRV+Tm6MIgraniiLCYCBC4Wx2Yw9YwGDYI2XuSGkRutT605bUZIiwbXqLVF0/baRbkD0nyvNAAQeO4ZzH7S2WdbYgoAQXOqBgxxwwqE0EVtoXY6qz3ITSRGlqdIqVwAg4PZ8YmtSLAjgSr3GTLQmb6m+7HiS7tVO9Tz8XjdigXcBEDNQ33EkwJqVqTZDw8qC1uRN1Ze9k6CoI/jT3EndRkSljWoCYF4UdY0v1tpYk9VUXDLRiryhrmQmkxR1TP0y18l+SpPZ0CgHEPisE75TFrAuOeibE0nSsvxB9WeCCYo6g/E5J/vIoEoTyawGmPHD+4IACxPxgvxODRi/JyjqmspujjvaadyZRgB/vbuDoLeO8ZZ4To6oASOcoIg7mJkHeyhLuw3scoAG0HC6JlDieVZeVwNGNE4RT8jYvA12Fa+Qoi+sHzd22YgVCSgIlmTIb9WgMROniGfrPqtK3AxA4E/d8HZK8KZ4Wg6rwfT9uAh7p9MxsIvyVYtXACz5rZ7TBF1DS3K4OGjMxkXEF0rFgL2KmwEYQKDZeUKkMVS8mn4YE+FAaHEB7KDlfT2HzQD+p61fbfQbf8bEH3XTiwtLsNHanj1/nJKyFKFLXtCrHKmffvQIqKH1J/CQr2vxAAzrv/KArxzb/1X80A5tr/YXN+HoEE9YlVAAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTEtMDEtMjhUMjI6NDc6NTMtMDg6MDCkTnLJAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDExLTAxLTI4VDIyOjQ3OjUzLTA4OjAw1RPKdQAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAASUVORK5CYII=";
         public WPFChatForm()
         {
             InitializeComponent();
-            byte[] binaryData = Convert.FromBase64String(sendpic);
-
-            BitmapImage bi = new BitmapImage();
-            bi.BeginInit();
-            bi.StreamSource = new MemoryStream(binaryData);
-            bi.EndInit();
-            sendimg.Source = bi;
         }
         public void adds()
         {
@@ -41,17 +30,19 @@ namespace ScreenCapturing
 
             Frame container = new Frame();
             container.MouseDoubleClick += (s, e) => { };
-            b.Margin = new Thickness { Left = 5, Right = 5, Top = 5 };
+            //b.Margin = new Thickness (5,5,5,0);
             StackPanel msg = new StackPanel();
             Label sndr = new Label();
             sndr.FontSize = 11;
             sndr.Foreground = (sender == "Teacher")?Brushes.DarkGreen:Brushes.DarkGray;
-
+            container.MouseDoubleClick += Container_MouseDoubleClick;
             TextBlock mesg = new TextBlock();
             mesg.Text = message;
-            mesg.FontSize = 14;
+            mesg.TextWrapping = TextWrapping.Wrap;
+            mesg.FontSize = 16;
+            mesg.FontFamily = new FontFamily("Times New Roman");
             mesg.Foreground = Brushes.Black;
-            mesg.Margin = new Thickness { Right = 3, Bottom = 3, Left = 3 };
+            mesg.Margin = new Thickness (3,0,3,3);
             sndr.Content = sender;
             if (ia(message[0])) mesg.FlowDirection = FlowDirection.RightToLeft;
             msg.Children.Add(sndr);
@@ -59,8 +50,29 @@ namespace ScreenCapturing
             container.Content = msg;
 
             b.Child = container;
-            MessageList.Children.Add(b);
+            WrapPanel wp = new WrapPanel();
+            wp.Margin = new Thickness(5, 5, 5, 0);
+            wp.Children.Add(b);
+            MessageList.Children.Add(wp);
             scrollViewer.ScrollToEnd();
+        }
+
+        private void Container_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var text = (((sender as Frame).Content as StackPanel).Children[1] as TextBlock).Text;
+                Clipboard.SetText(text);
+                (((sender as Frame).Content as StackPanel).Children[1] as TextBlock).Text = "تم النسخ ✔";
+                reset(sender,text);
+            }
+            catch { }
+        }
+        async void reset(Object sender,string text)
+        {
+            await System.Threading.Tasks.Task.Delay(500).ContinueWith(_ =>{});
+            (((sender as Frame).Content as StackPanel).Children[1] as TextBlock).Text = text;
+
         }
         public static bool ia(char glyph)
         {

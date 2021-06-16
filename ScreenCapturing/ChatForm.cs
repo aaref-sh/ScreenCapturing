@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -17,6 +10,7 @@ namespace ScreenCapturing
         {
             InitializeComponent();
             wpfChatForm1.adds();
+            Form1.connection.InvokeAsync("getMessages");
             bottom_side.MouseMove += (s, e) => { if (drag) Height = Math.Max(Cursor.Position.Y - Top, 300); };
             right_side.MouseMove += (s, e) => { if (drag) Width = Math.Max(Cursor.Position.X - Left, 200); };
             corner_resizer.MouseMove += (s, e) => { if (drag) { Height = Math.Max(Cursor.Position.Y - Top,150); Width = Math.Max(50, Cursor.Position.X - Left); } };

@@ -22,7 +22,7 @@ namespace ScreenCapturing.classes
         }
         public static Bitmap Resized(Bitmap bmp)
         {
-            if (Form1.percent == 100) return bmp;
+            if (Form1.percent >95) return bmp;
             double dd = 1.0 * bmp.Width / bmp.Height;
             int width = bmp.Width * Form1.percent / 100, height = (int)(width / dd);
             Bitmap result = new Bitmap(width, height, Form1.quality);

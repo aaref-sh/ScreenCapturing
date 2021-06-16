@@ -23,10 +23,9 @@ namespace ScreenCapturing
         Bitmap[,] sa = new Bitmap[10, 10];
         Bitmap[,] prev = new Bitmap[10, 10];
         int x = 10, y = 10;
-        ControlPanel c = new ControlPanel();
+        ControlPanel c;
         ChatForm chat;
         StreamClient sc;
-        bool chatting = false;
         int port;
         bool mic_muted = false;
         string group;
@@ -47,13 +46,15 @@ namespace ScreenCapturing
                 .WithAutomaticReconnect()
                 .Build();
             await connection.StartAsync();
-            // await connection.InvokeAsync<int>("getport","ss");
-            group = await connection.InvokeAsync<string>("teacherconnected");
+            await connection.InvokeAsync("SetName", "Teacher");
+            group = await connection.InvokeAsync<string>("GetGroupId",Logger.room_name);
             await connection.InvokeAsync("AddToGroup", group);
             port = await connection.InvokeAsync<int>("getport",group);
             sc = new StreamClient(port,"192.168.1.111");
             sc.Init();
             sc.ConnectToServer();
+            c = new ControlPanel();
+            chat = new ChatForm();
             Ext.pass = group;
         }
         private Bitmap CaptureImage()
@@ -90,7 +91,7 @@ namespace ScreenCapturing
                     }
                 }
             }
-            return Ext.Resized(b);
+            return b;
         }
 
         public async Task SendUpdates()
@@ -110,7 +111,7 @@ namespace ScreenCapturing
                         {
                             using (MemoryStream ms = new MemoryStream())
                             {
-                                sa[i, j].Save(ms, ImageFormat.Jpeg);
+                                Ext.Resized(sa[i, j]).Save(ms, ImageFormat.Jpeg);
                                 string base64 = Convert.ToBase64String(ms.ToArray());
                                 if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
                                 await connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
@@ -170,8 +171,11 @@ namespace ScreenCapturing
                 Left = Cursor.Position.X - posX;
                 Left = Math.Max(Left, 0);
                 Left = Math.Min(Right, Screen.PrimaryScreen.Bounds.Width) - Width;
-                c.Left = Right;
-                c.Top = Top;
+                if(c!=null)
+                {
+                    c.Left = Right;
+                    c.Top = Top;
+                }
             }
             this.Cursor = Cursors.Default;
         }
@@ -184,7 +188,7 @@ namespace ScreenCapturing
             if (drag)
             {
                 Width = Cursor.Position.X - Left > 0 ? Cursor.Position.X - Left : 0;
-                c.Left = Right;
+                if(c!=null) c.Left = Right;
             }
         }
         private void Label1_MouseMove(object sender, MouseEventArgs e)
@@ -195,6 +199,7 @@ namespace ScreenCapturing
         {
             sc.ConnectToServer();
             if (caster != null) caster.Abort();
+            Program.logger.Dispose();
             this.Close();
         }
         private void L2_MouseMove(object sender, MouseEventArgs e)
@@ -203,12 +208,17 @@ namespace ScreenCapturing
             {
                 Width = Cursor.Position.X - Left;
                 Height = Cursor.Position.Y - Top;
-                c.Left = Right;
-                c.Top = Top;
+                if(c!=null)
+                {
+                    c.Left = Right;
+                    c.Top = Top;
+                }
+                
             }
         }
         private void settingsbtn_Click(object sender, EventArgs e)
         {
+            if (c == null) c = new ControlPanel();
             c.Show();
             c.Top = Top;
             c.Left = Right;
@@ -224,11 +234,7 @@ namespace ScreenCapturing
         }
         private void btnchat_Click(object sender, EventArgs e)
         {
-            if (!chatting) 
-            { 
-                chatting = true;
-                chat = new ChatForm();
-            }
+            if (chat==null) chat = new ChatForm();
             chat.Show();
         }
 

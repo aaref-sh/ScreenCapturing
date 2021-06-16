@@ -35,9 +35,9 @@ namespace ScreenCapturing
             this.top_bar = new System.Windows.Forms.Panel();
             this.close_btn = new System.Windows.Forms.PictureBox();
             this.top_side = new System.Windows.Forms.Label();
+            this.left_side = new System.Windows.Forms.Label();
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
             this.wpfChatForm1 = new ScreenCapturing.WPFChatForm();
-            this.left_side = new System.Windows.Forms.Label();
             this.bottom_side.SuspendLayout();
             this.top_bar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.close_btn)).BeginInit();
@@ -114,6 +114,15 @@ namespace ScreenCapturing
             this.top_side.Size = new System.Drawing.Size(327, 2);
             this.top_side.TabIndex = 1;
             // 
+            // left_side
+            // 
+            this.left_side.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.left_side.Dock = System.Windows.Forms.DockStyle.Left;
+            this.left_side.Location = new System.Drawing.Point(0, 0);
+            this.left_side.Name = "left_side";
+            this.left_side.Size = new System.Drawing.Size(2, 538);
+            this.left_side.TabIndex = 6;
+            // 
             // elementHost1
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -123,15 +132,6 @@ namespace ScreenCapturing
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.wpfChatForm1;
-            // 
-            // left_side
-            // 
-            this.left_side.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
-            this.left_side.Dock = System.Windows.Forms.DockStyle.Left;
-            this.left_side.Location = new System.Drawing.Point(0, 0);
-            this.left_side.Name = "left_side";
-            this.left_side.Size = new System.Drawing.Size(2, 538);
-            this.left_side.TabIndex = 6;
             // 
             // ChatForm
             // 

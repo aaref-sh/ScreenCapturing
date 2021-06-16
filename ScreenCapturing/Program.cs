@@ -8,6 +8,7 @@ namespace ScreenCapturing
 {
     static class Program
     {
+        public static Logger logger;
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -16,7 +17,8 @@ namespace ScreenCapturing
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            logger = new Logger();
+            Application.Run(logger);
         }
     }
 }

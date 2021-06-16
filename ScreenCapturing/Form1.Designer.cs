@@ -65,9 +65,9 @@ namespace ScreenCapturing
             // 
             // l2
             // 
-            this.l2.BackColor = System.Drawing.Color.White;
+            this.l2.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.l2.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.l2.Location = new System.Drawing.Point(200, 17);
+            this.l2.Location = new System.Drawing.Point(177, 17);
             this.l2.Name = "l2";
             this.l2.Size = new System.Drawing.Size(7, 7);
             this.l2.TabIndex = 3;
@@ -102,7 +102,7 @@ namespace ScreenCapturing
             this.label5.BackColor = System.Drawing.Color.Red;
             this.label5.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(75, 0);
+            this.label5.Location = new System.Drawing.Point(127, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(17, 22);
             this.label5.TabIndex = 8;
@@ -126,9 +126,9 @@ namespace ScreenCapturing
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Cursor = System.Windows.Forms.Cursors.Default;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(531, 2);
+            this.panel1.Location = new System.Drawing.Point(600, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(269, 24);
+            this.panel1.Size = new System.Drawing.Size(200, 24);
             this.panel1.TabIndex = 9;
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.L1_MouseDown);
             this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.L1_MouseMove);
@@ -144,15 +144,15 @@ namespace ScreenCapturing
             this.panel2.Controls.Add(this.pbmic);
             this.panel2.Controls.Add(this.label5);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(62, 0);
+            this.panel2.Location = new System.Drawing.Point(17, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(207, 24);
+            this.panel2.Size = new System.Drawing.Size(183, 24);
             this.panel2.TabIndex = 13;
             // 
             // pictureBox2
             // 
             this.pictureBox2.Image = global::ScreenCapturing.Properties.Resources.settings;
-            this.pictureBox2.Location = new System.Drawing.Point(39, 1);
+            this.pictureBox2.Location = new System.Drawing.Point(36, 1);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(29, 22);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -174,7 +174,7 @@ namespace ScreenCapturing
             // pbspeaker
             // 
             this.pbspeaker.Image = ((System.Drawing.Image)(resources.GetObject("pbspeaker.Image")));
-            this.pbspeaker.Location = new System.Drawing.Point(129, -2);
+            this.pbspeaker.Location = new System.Drawing.Point(66, -2);
             this.pbspeaker.Name = "pbspeaker";
             this.pbspeaker.Size = new System.Drawing.Size(34, 26);
             this.pbspeaker.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -184,7 +184,7 @@ namespace ScreenCapturing
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(169, 0);
+            this.button1.Location = new System.Drawing.Point(149, 0);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(23, 23);
             this.button1.TabIndex = 6;
@@ -195,7 +195,7 @@ namespace ScreenCapturing
             // pbmic
             // 
             this.pbmic.Image = ((System.Drawing.Image)(resources.GetObject("pbmic.Image")));
-            this.pbmic.Location = new System.Drawing.Point(99, -4);
+            this.pbmic.Location = new System.Drawing.Point(100, -4);
             this.pbmic.Name = "pbmic";
             this.pbmic.Size = new System.Drawing.Size(23, 30);
             this.pbmic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;

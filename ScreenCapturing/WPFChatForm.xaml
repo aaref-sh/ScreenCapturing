@@ -9,12 +9,15 @@
              d:DesignHeight="446.25" d:DesignWidth="299.375">
     <DockPanel>
         <DockPanel Height="35" DockPanel.Dock="Bottom">
-            <Image x:Name="sendimg" DockPanel.Dock="Right"  MouseLeftButtonDown="Image_MouseLeftButtonDown" Source="ic_menu_send.png"/>
+            <Image x:Name="sendimg" DockPanel.Dock="Right"  MouseLeftButtonDown="Image_MouseLeftButtonDown" Source="pack://siteoforigin:,,,/Resources/ic_menu_send.png"/>
             <emoji:Picker x:Name="picker" Picked="picker_Picked"/>
-            <emoji:TextBox x:Name="MessageTextBox" KeyDown="MessageTextBox_KeyDown" TextChanged="MessageTextBox_TextChanged" FontSize="16" FontFamily="Times New Roman" TextAlignment="Right"/>
+            <emoji:TextBox x:Name="MessageTextBox" KeyDown="MessageTextBox_KeyDown" TextChanged="MessageTextBox_TextChanged" FontSize="16" FontFamily="Times New Roman" TextAlignment="Right" TextWrapping="WrapWithOverflow" MinLines="2" MaxLines="5"/>
         </DockPanel>
         <ScrollViewer VerticalScrollBarVisibility="Auto" x:Name="scrollViewer">
-            <StackPanel x:Name="MessageList">
+            <ScrollViewer.Background>
+                <ImageBrush Stretch="UniformToFill" ImageSource="Resources/chatbg.jpg" Opacity="0.16"/>
+            </ScrollViewer.Background>
+            <StackPanel x:Name="MessageList" FlowDirection="RightToLeft">
 
             </StackPanel>
         </ScrollViewer>
