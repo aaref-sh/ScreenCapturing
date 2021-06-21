@@ -61,7 +61,7 @@ namespace ScreenCapturing
             chat = new ChatForm();
             Ext.pass = group;
         }
-        private Bitmap CaptureImage()
+        private void CaptureImage()
         {
             Bitmap b = new Bitmap(Width, Height - 23, quality);
             using (Graphics g = Graphics.FromImage(b))
@@ -95,28 +95,14 @@ namespace ScreenCapturing
                     }
                 }
             }
-            return Ext.Resized(b);
+            srclist.Add(Ext.Resized(b));
         }
-
+        Bitmap src;
+        List<Bitmap> srclist = new List<Bitmap>();
+        bool takenew = true;
         public void SetUpdates()
         {
-            Bitmap src = CaptureImage();
-            int wdt = src.Width / x, hgt = src.Height / y;
-            for (int i = 0; i < y; i++)
-            {
-                for (int j = 0; j < x; j++)
-                {
-                    Rectangle r = new Rectangle(new Point(j * wdt, i * hgt), new Size(wdt, hgt));
-                    sa[i, j] = src.Clone(r, src.PixelFormat);
-                    if (!Ext.Compare(sa[i, j], prev[i, j]))
-                    {
-                        prev[i, j] = sa[i, j];
-                        var parttosend = new Tuple<int, int>(i, j);
-                        if (!tosend.Contains(parttosend))
-                            tosend.Add(parttosend);
-                    }
-                }
-            }
+              CaptureImage();
         }
         DateTime last;
         Thread caster = null;
@@ -131,21 +117,35 @@ namespace ScreenCapturing
 
         private void SendUpdates(object sender, DoWorkEventArgs e)
         {
-            while(true)
-                if(tosend?.Count>0)
+            while (true)
+            {
+                if (srclist.Count == 0) continue;
+                Bitmap src = srclist[srclist.Count - 1];
+                srclist.Clear();
+                if (src != null)
                 {
-                    var i = tosend[0]?.Item1??11;
-                    var j = tosend[0]?.Item2??11;
-                    tosend.RemoveAt(0);
-                    if(i!=11)
-                    using (MemoryStream ms = new MemoryStream())
+                    int wdt = src.Width / x, hgt = src.Height / y;
+                    for (int i = 0; i < y; i++)
                     {
-                        sa[i, j].Save(ms, ImageFormat.Jpeg);
-                        string base64 = Convert.ToBase64String(ms.ToArray());
-                        if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
-                        connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
+                        for (int j = 0; j < x; j++)
+                        {
+                            Rectangle r = new Rectangle(new Point(j * wdt, i * hgt), new Size(wdt, hgt));
+                            sa[i, j] = src.Clone(r, src.PixelFormat);
+                            if (!Ext.Compare(sa[i, j], prev[i, j]))
+                            {
+                                prev[i, j] = sa[i, j];
+                                using (MemoryStream ms = new MemoryStream())
+                                {
+                                    sa[i, j].Save(ms, ImageFormat.Jpeg);
+                                    string base64 = Convert.ToBase64String(ms.ToArray());
+                                    if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
+                                    connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
+                                }
+                            }
+                        }
                     }
                 }
+            }
         }
 
         void Cast()
