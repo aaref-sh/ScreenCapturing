@@ -2,6 +2,8 @@
 using ScreenCapturing.classes;
 using ScreenCapturing.Properties;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -28,6 +30,8 @@ namespace ScreenCapturing
         StreamClient sc;
         int port;
         bool mic_muted = false;
+        List<Tuple<int, int>> tosend = new List<Tuple<int, int>>();
+        BackgroundWorker bgw;
         string group;
         bool speaker_muted = false;
         public Form1()
@@ -91,10 +95,10 @@ namespace ScreenCapturing
                     }
                 }
             }
-            return b;
+            return Ext.Resized(b);
         }
 
-        public async Task SendUpdates()
+        public void SetUpdates()
         {
             Bitmap src = CaptureImage();
             int wdt = src.Width / x, hgt = src.Height / y;
@@ -102,51 +106,57 @@ namespace ScreenCapturing
             {
                 for (int j = 0; j < x; j++)
                 {
-
                     Rectangle r = new Rectangle(new Point(j * wdt, i * hgt), new Size(wdt, hgt));
                     sa[i, j] = src.Clone(r, src.PixelFormat);
                     if (!Ext.Compare(sa[i, j], prev[i, j]))
                     {
-                        try
-                        {
-                            using (MemoryStream ms = new MemoryStream())
-                            {
-                                Ext.Resized(sa[i, j]).Save(ms, ImageFormat.Jpeg);
-                                string base64 = Convert.ToBase64String(ms.ToArray());
-                                if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
-                                await connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
-                                prev[i, j] = sa[i, j];
-                            }
-                        }
-                        catch (Exception e) { MessageBox.Show(e.Message); }
+                        prev[i, j] = sa[i, j];
+                        var parttosend = new Tuple<int, int>(i, j);
+                        if (!tosend.Contains(parttosend))
+                            tosend.Add(parttosend);
                     }
                 }
             }
         }
-        DateTime last = DateTime.Now;
-        public async Task Cap()
-        {
-            if (DateTime.Now - last >= TimeSpan.FromMilliseconds(1000 / FPSRate))
-            {
-                last = DateTime.Now;
-                try
-                {
-                    await SendUpdates();
-                }
-                catch (Exception e) { Console.WriteLine(e); }
-            }
-
-        }
+        DateTime last;
         Thread caster = null;
         private void Button1_Click(object sender, EventArgs e)
         {
             caster = new Thread(Cast);
+            bgw = new BackgroundWorker();
+            bgw.DoWork += SendUpdates;
+            bgw.RunWorkerAsync();
             caster.Start();
         }
-        async void Cast()
+
+        private void SendUpdates(object sender, DoWorkEventArgs e)
+        {
+            while(true)
+                if(tosend?.Count>0)
+                {
+                    var i = tosend[0]?.Item1??11;
+                    var j = tosend[0]?.Item2??11;
+                    tosend.RemoveAt(0);
+                    if(i!=11)
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        sa[i, j].Save(ms, ImageFormat.Jpeg);
+                        string base64 = Convert.ToBase64String(ms.ToArray());
+                        if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
+                        connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
+                    }
+                }
+        }
+
+        void Cast()
         {
             while (connection.State == HubConnectionState.Connected)
-                await Cap();
+            {
+                last = DateTime.Now;
+                SetUpdates();
+                var time = TimeSpan.FromMilliseconds(1000 / FPSRate) - (DateTime.Now - last);
+                if(time>TimeSpan.FromMilliseconds(0)) Thread.Sleep(time);
+            }
         }
         
         
