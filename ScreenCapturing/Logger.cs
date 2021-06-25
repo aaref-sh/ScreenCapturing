@@ -1,23 +1,33 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Web.Helpers;
 using System.Windows.Forms;
 
 namespace ScreenCapturing
 {
+    public static class Http
+    {
+        public static byte[] Post(string uri, NameValueCollection pairs)
+        {
+            byte[] response = null;
+            using (WebClient client = new WebClient())
+            {
+                response = client.UploadValues(uri, pairs);
+            }
+            return response;
+        }
+    }
     public partial class Logger : Form
     {
-        HubConnection connection;
         public static string room_name;
         public static Form1 form1;
         public Logger()
         {
             InitializeComponent();
-            Configsignalr();
             session_list.MouseDoubleClick += Session_list_MouseDoubleClick;
             Get_sessions();
         }
@@ -28,12 +38,9 @@ namespace ScreenCapturing
             session_list.Items.Clear();
             try
             {
-                using (WebClient client = new WebClient())
-                {
-                    byte[] response = client.UploadValues("http://192.168.1.111:5000/api/Rooms/get_rooms", new NameValueCollection() { });
-                    string result = Encoding.UTF8.GetString(response);
-                    SessionList = Json.Decode<List<string>>(result);
-                }
+                var response = Http.Post("http://192.168.1.111:5000/api/Rooms/GetRooms", new NameValueCollection() {});
+                string result = Encoding.UTF8.GetString(response);
+                SessionList = Json.Decode<List<string>>(result);
                 foreach (var session in SessionList) session_list.Items.Add(session);
             }
             catch { MessageBox.Show("فشل الوصول للخادم"); }
@@ -43,25 +50,16 @@ namespace ScreenCapturing
             if (session_list.SelectedIndex != -1)
             {
                 room_name = SessionList[session_list.SelectedIndex];
-                connection.DisposeAsync();
                 form1 = new Form1();
                 form1.Show();
                 Hide();
             }
         }
-        async void Configsignalr()
-        {
-            connection = new HubConnectionBuilder()
-                .WithUrl("http://192.168.1.111:5000/CastHub")
-                .WithAutomaticReconnect()
-                .Build();
-            await connection.StartAsync();
-        }
         private void Create_btn_Click(object sender, EventArgs e)
         {
             try
             {
-                if (!string.IsNullOrEmpty(creatroomname_tb.Text.Trim()))
+                if (!string.IsNullOrWhiteSpace(creatroomname_tb.Text))
                 {
                     Createroom();
                     creatroomname_tb.Text = "";
@@ -69,25 +67,26 @@ namespace ScreenCapturing
             }
             catch { MessageBox.Show("فشل إنشاء المحاضرة"); }
         }
-        async void Createroom()
+        async void post(string action,string room_name)
         {
-
-            if( await connection.InvokeAsync<bool>("CreateRoom", creatroomname_tb.Text.ToString().Trim()))
+            string myJson = "{\"room_name\": \""+room_name+"\"}";
+            using (var client = new HttpClient())
             {
+                var response = await client.PostAsync("http://192.168.1.111:5000/api/Rooms/"+action,
+                    new StringContent(myJson, Encoding.UTF8, "application/json"));
+                if(action=="CreateRoom")if(!bool.Parse(response.Content.ReadAsStringAsync().Result))MessageBox.Show("فشل إنشاء المحاضرة");
                 Get_sessions();
-                MessageBox.Show("تم إنشاء المحاضرة");
             }
-            else
-            {
-                MessageBox.Show("اختر اسم محاضرة آخر");
-            }
+        }
+        void Createroom()
+        {
+            post("CreateRoom", creatroomname_tb.Text);
         }
         private void Login_btn_Click(object sender, EventArgs e)
         {
             if (session_list.SelectedIndex != -1)
             {
                 room_name = SessionList[session_list.SelectedIndex];
-                connection.DisposeAsync();
                 form1 = new Form1();
                 form1.Show();
                 Hide();
@@ -102,21 +101,11 @@ namespace ScreenCapturing
             }
             try
             {
-                Deletesession();
-                MessageBox.Show("تم الحذف");
+                post("DeleteRoom", SessionList[session_list.SelectedIndex]);
             }
             catch { MessageBox.Show("فشل الحذف"); }
         }
-        async void Deletesession()
-        {
-
-            await connection.InvokeAsync("DeleteRoom", SessionList[session_list.SelectedIndex]);
-            Get_sessions();
-        }
-
-        private void updatelistbtn_Click(object sender, EventArgs e)
-        {
-            Get_sessions();
-        }
+        private void updatelistbtn_Click(object sender, EventArgs e) => Get_sessions();
+        
     }
 }

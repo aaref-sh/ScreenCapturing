@@ -9,7 +9,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using VoiceClient;
 
@@ -28,12 +27,21 @@ namespace ScreenCapturing
         ControlPanel c;
         ChatForm chat;
         StreamClient sc;
+        Drawing drawing;
         int port;
         bool mic_muted = false;
-        List<Tuple<int, int>> tosend = new List<Tuple<int, int>>();
         BackgroundWorker bgw;
         string group;
         bool speaker_muted = false;
+        List<Bitmap> srclist = new List<Bitmap>();
+        DateTime last;
+        Thread caster = null;
+        bool painting = false;
+        Bitmap todraw;
+        Bitmap clean;
+        bool Casting = false;
+        Point lastPoint = Point.Empty;
+
         public Form1()
         {
             InitializeComponent();
@@ -59,7 +67,35 @@ namespace ScreenCapturing
             sc.ConnectToServer();
             c = new ControlPanel();
             chat = new ChatForm();
+            drawing = new Drawing();
             Ext.pass = group;
+            caster = new Thread(Cast);
+            bgw = new BackgroundWorker();
+            bgw.DoWork += SendUpdates;
+            bgw.RunWorkerAsync();
+            caster.Start();
+        }
+        void drawingbtn_Click(Object sender,EventArgs e)
+        {
+            if (!painting)
+            {
+                painting = true;
+                drawing.Show();
+                drawing.Top = Bottom;
+                drawing.Left = Right - 250;
+                todraw = new Bitmap(Width, Height - 23, quality);
+                using (Graphics g = Graphics.FromImage(todraw))
+                {
+                    g.CopyFromScreen(Left, Top, 0, 0, new Size(Width, Height), CopyPixelOperation.SourceCopy);
+                }
+                BackgroundImage = clean = todraw;
+            }
+            else
+            {
+                BackgroundImage = null;
+                painting = false;
+                drawing.Hide();
+            }
         }
         private void CaptureImage()
         {
@@ -97,24 +133,12 @@ namespace ScreenCapturing
             }
             srclist.Add(Ext.Resized(b));
         }
-        Bitmap src;
-        List<Bitmap> srclist = new List<Bitmap>();
-        bool takenew = true;
-        public void SetUpdates()
-        {
-              CaptureImage();
-        }
-        DateTime last;
-        Thread caster = null;
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            caster = new Thread(Cast);
-            bgw = new BackgroundWorker();
-            bgw.DoWork += SendUpdates;
-            bgw.RunWorkerAsync();
-            caster.Start();
-        }
 
+        private void CastinTougle_Click(object sender, EventArgs e)
+        {
+            Casting = !Casting;
+            CastingTouglebtn.Image =Casting? Resources.pause : Resources.play; 
+        }
         private void SendUpdates(object sender, DoWorkEventArgs e)
         {
             while (true)
@@ -131,7 +155,7 @@ namespace ScreenCapturing
                         {
                             Rectangle r = new Rectangle(new Point(j * wdt, i * hgt), new Size(wdt, hgt));
                             sa[i, j] = src.Clone(r, src.PixelFormat);
-                            if (!Ext.Compare(sa[i, j], prev[i, j]))
+                            if (!Ext.CompareMemCmp(sa[i, j], prev[i, j]))
                             {
                                 prev[i, j] = sa[i, j];
                                 using (MemoryStream ms = new MemoryStream())
@@ -152,89 +176,17 @@ namespace ScreenCapturing
         {
             while (connection.State == HubConnectionState.Connected)
             {
-                last = DateTime.Now;
-                SetUpdates();
-                var time = TimeSpan.FromMilliseconds(1000 / FPSRate) - (DateTime.Now - last);
-                if(time>TimeSpan.FromMilliseconds(0)) Thread.Sleep(time);
+                if (Casting)
+                {
+                    last = DateTime.Now;
+                    CaptureImage();
+                    var time = TimeSpan.FromMilliseconds(1000 / FPSRate) - (DateTime.Now - last);
+                    if (time > TimeSpan.FromMilliseconds(0)) Thread.Sleep(time);
+                }
             }
         }
         
         
-        #region resize and drag
-        private void L1_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
-                drag = true;
-                posX = Cursor.Position.X - Left;
-                posY = Cursor.Position.Y - Top;
-            }
-        }
-        private void L1_MouseUp(object sender, MouseEventArgs e) => drag = false;
-        private void L1_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (drag)
-            {
-                Top = Cursor.Position.Y - posY;
-                Top = Math.Max(Top, 0);
-                Top = Math.Min(Bottom, Screen.PrimaryScreen.Bounds.Height) - Height;
-                Left = Cursor.Position.X - posX;
-                Left = Math.Max(Left, 0);
-                Left = Math.Min(Right, Screen.PrimaryScreen.Bounds.Width) - Width;
-                if(c!=null)
-                {
-                    c.Left = Right;
-                    c.Top = Top;
-                }
-            }
-            this.Cursor = Cursors.Default;
-        }
-        int posX;
-        int posY;
-        bool drag;
-
-        private void Label3_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (drag)
-            {
-                Width = Cursor.Position.X - Left > 0 ? Cursor.Position.X - Left : 0;
-                if(c!=null) c.Left = Right;
-            }
-        }
-        private void Label1_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (drag) Height = Cursor.Position.Y - Top > 0 ? Cursor.Position.Y - Top : 0;
-        }
-        private void Label5_Click(object sender, EventArgs e)
-        {
-            sc.ConnectToServer();
-            if (caster != null) caster.Abort();
-            Program.logger.Dispose();
-            this.Close();
-        }
-        private void L2_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (drag)
-            {
-                Width = Cursor.Position.X - Left;
-                Height = Cursor.Position.Y - Top;
-                if(c!=null)
-                {
-                    c.Left = Right;
-                    c.Top = Top;
-                }
-                
-            }
-        }
-        private void settingsbtn_Click(object sender, EventArgs e)
-        {
-            if (c == null) c = new ControlPanel();
-            c.Show();
-            c.Top = Top;
-            c.Left = Right;
-        }
-        #endregion
-
         private void pbspeaker_Click(object sender, EventArgs e)
         {
             if (speaker_muted) pbspeaker.Image = Resources.su;
@@ -255,5 +207,111 @@ namespace ScreenCapturing
             mic_muted = !mic_muted;
             sc.mictougle();
         }
+        private void Form_MouseDown(object sender, MouseEventArgs e)
+        {
+            lastPoint = e.Location;//we assign the lastPoint to the current mouse position: e.Location ('e' is from the MouseEventArgs passed into the MouseDown event)
+            isMouseDown = true;//we set to true because our mouse button is down (clicked)
+        }
+        private void Form_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown)//check to see if the mouse button is down
+            {
+                //pbpaintboard.Image = BackgroundImage;
+                using (Graphics g = Graphics.FromImage(BackgroundImage))
+                {//we need to create a Graphics object to draw on the picture box, its our main tool
+                    //when making a Pen object, you can just give it color only or give it color and pen size
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    g.DrawLine(new Pen(drawing.colorDialog1.Color, Drawing.thickness), lastPoint, e.Location);
+                    //this is to give the drawing a more smoother, less sharper look
+                }
+                Invalidate();
+                lastPoint = e.Location;//keep assigning the lastPoint to the current mouse position
+            }
+        }
+        public void Clean() => BackgroundImage = clean;
+        private void Form_MouseUp(object sender, MouseEventArgs e)
+        {
+            isMouseDown = false;
+            lastPoint = Point.Empty;
+            //set the previous point back to null if the user lets go of the mouse button
+        }
+
+        #region resize and drag
+        private void L1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                isMouseDown = true;
+                posX = Cursor.Position.X - Left;
+                posY = Cursor.Position.Y - Top;
+            }
+        }
+        private void L1_MouseUp(object sender, MouseEventArgs e) => isMouseDown = false;
+        private void L1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown)
+            {
+                Top = Cursor.Position.Y - posY;
+                Top = Math.Max(Top, 0);
+                Top = Math.Min(Bottom, Screen.PrimaryScreen.Bounds.Height) - Height;
+                Left = Cursor.Position.X - posX;
+                Left = Math.Max(Left, 0);
+                Left = Math.Min(Right, Screen.PrimaryScreen.Bounds.Width) - Width;
+                if(c!=null)
+                {
+                    c.Left = Right;
+                    c.Top = Top;
+                    drawing.Top = Bottom;
+                    drawing.Left = Right - 250;
+                }
+            }
+            Cursor = Cursors.Default;
+        }
+        int posX;
+        int posY;
+        bool isMouseDown;
+
+        private void Label3_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown)
+            {
+                Width = Cursor.Position.X - Left > 0 ? Cursor.Position.X - Left : 0;
+                if(c!=null) c.Left = Right;
+            }
+        }
+        private void Label1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown) Height = Cursor.Position.Y - Top > 0 ? Cursor.Position.Y - Top : 0;
+        }
+        private void Closebtn_Click(object sender, EventArgs e)
+        {
+            sc.ConnectToServer();
+            if (caster != null) caster.Abort();
+            Program.logger.Dispose();
+            Close();
+        }
+        private void L2_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (isMouseDown)
+            {
+                Width = Cursor.Position.X - Left;
+                Height = Cursor.Position.Y - Top;
+                if(c!=null)
+                {
+                    c.Left = Right;
+                    c.Top = Top;
+                }
+                
+            }
+        }
+        private void settingsbtn_Click(object sender, EventArgs e)
+        {
+            if (c == null) c = new ControlPanel();
+            c.Show();
+            c.Top = Top;
+            c.Left = Right;
+        }
+        #endregion
+
     }
 }

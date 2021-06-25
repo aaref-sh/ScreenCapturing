@@ -24,7 +24,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -281,15 +281,19 @@
     <Compile Include="ControlPanel.Designer.cs">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Drawing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Drawing.Designer.cs">
+      <DependentUpon>Drawing.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Logger.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Logger.cs" />
     <Compile Include="Logger.Designer.cs">
       <DependentUpon>Logger.cs</DependentUpon>
     </Compile>
@@ -308,6 +312,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel.resx">
       <DependentUpon>ControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Drawing.resx">
+      <DependentUpon>Drawing.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
@@ -352,9 +359,12 @@
     <None Include="Resources\close.png" />
     <Content Include="Resources\chatbg.jpg" />
     <Content Include="Resources\m.png" />
+    <None Include="Resources\pause.png" />
+    <None Include="Resources\play.png" />
+    <None Include="Resources\pen1.png" />
     <Content Include="Resources\sm.png" />
     <Content Include="Resources\su.png" />
-    <Content Include="Resources\um.png" />
+    <None Include="Resources\um.png" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />

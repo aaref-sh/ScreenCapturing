@@ -34,23 +34,27 @@ namespace ScreenCapturing
             this.l2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.CastingTouglebtn = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.pbmic = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pbspeaker = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.pbmic = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel4.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CastingTouglebtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbmic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbspeaker)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbmic)).BeginInit();
             this.SuspendLayout();
             // 
             // label2
@@ -67,7 +71,7 @@ namespace ScreenCapturing
             // 
             this.l2.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.l2.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.l2.Location = new System.Drawing.Point(177, 17);
+            this.l2.Location = new System.Drawing.Point(193, 17);
             this.l2.Name = "l2";
             this.l2.Size = new System.Drawing.Size(7, 7);
             this.l2.TabIndex = 3;
@@ -97,19 +101,6 @@ namespace ScreenCapturing
             this.label4.Size = new System.Drawing.Size(800, 2);
             this.label4.TabIndex = 8;
             // 
-            // label5
-            // 
-            this.label5.BackColor = System.Drawing.Color.Red;
-            this.label5.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(127, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(17, 22);
-            this.label5.TabIndex = 8;
-            this.label5.Text = "X";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label5.Click += new System.EventHandler(this.Label5_Click);
-            // 
             // panel4
             // 
             this.panel4.Controls.Add(this.panel1);
@@ -126,9 +117,9 @@ namespace ScreenCapturing
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Cursor = System.Windows.Forms.Cursors.Default;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(600, 2);
+            this.panel1.Location = new System.Drawing.Point(550, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 24);
+            this.panel1.Size = new System.Drawing.Size(250, 24);
             this.panel1.TabIndex = 9;
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.L1_MouseDown);
             this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.L1_MouseMove);
@@ -136,25 +127,70 @@ namespace ScreenCapturing
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.pictureBox5);
+            this.panel2.Controls.Add(this.CastingTouglebtn);
+            this.panel2.Controls.Add(this.pictureBox3);
+            this.panel2.Controls.Add(this.pbmic);
             this.panel2.Controls.Add(this.pictureBox2);
             this.panel2.Controls.Add(this.pictureBox1);
             this.panel2.Controls.Add(this.l2);
             this.panel2.Controls.Add(this.pbspeaker);
-            this.panel2.Controls.Add(this.button1);
-            this.panel2.Controls.Add(this.pbmic);
-            this.panel2.Controls.Add(this.label5);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(17, 0);
+            this.panel2.Location = new System.Drawing.Point(49, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(183, 24);
+            this.panel2.Size = new System.Drawing.Size(201, 24);
             this.panel2.TabIndex = 13;
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.Image = global::ScreenCapturing.Properties.Resources.pen;
+            this.pictureBox5.Location = new System.Drawing.Point(56, 0);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(22, 23);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox5.TabIndex = 14;
+            this.pictureBox5.TabStop = false;
+            this.pictureBox5.Click += new System.EventHandler(this.drawingbtn_Click);
+            // 
+            // CastingTouglebtn
+            // 
+            this.CastingTouglebtn.Image = global::ScreenCapturing.Properties.Resources.play;
+            this.CastingTouglebtn.Location = new System.Drawing.Point(167, 0);
+            this.CastingTouglebtn.Name = "CastingTouglebtn";
+            this.CastingTouglebtn.Size = new System.Drawing.Size(23, 24);
+            this.CastingTouglebtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.CastingTouglebtn.TabIndex = 14;
+            this.CastingTouglebtn.TabStop = false;
+            this.CastingTouglebtn.Click += new System.EventHandler(this.CastinTougle_Click);
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = global::ScreenCapturing.Properties.Resources.close;
+            this.pictureBox3.Location = new System.Drawing.Point(141, 0);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(24, 24);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 14;
+            this.pictureBox3.TabStop = false;
+            this.pictureBox3.Click += new System.EventHandler(this.Closebtn_Click);
+            // 
+            // pbmic
+            // 
+            this.pbmic.Image = ((System.Drawing.Image)(resources.GetObject("pbmic.Image")));
+            this.pbmic.Location = new System.Drawing.Point(34, 1);
+            this.pbmic.Name = "pbmic";
+            this.pbmic.Size = new System.Drawing.Size(21, 22);
+            this.pbmic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbmic.TabIndex = 11;
+            this.pbmic.TabStop = false;
+            this.pbmic.Click += new System.EventHandler(this.pbmic_Click);
             // 
             // pictureBox2
             // 
             this.pictureBox2.Image = global::ScreenCapturing.Properties.Resources.settings;
-            this.pictureBox2.Location = new System.Drawing.Point(36, 1);
+            this.pictureBox2.Location = new System.Drawing.Point(112, 1);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(29, 22);
+            this.pictureBox2.Size = new System.Drawing.Size(26, 22);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 13;
             this.pictureBox2.TabStop = false;
@@ -163,9 +199,9 @@ namespace ScreenCapturing
             // pictureBox1
             // 
             this.pictureBox1.Image = global::ScreenCapturing.Properties.Resources.Race5b6ada15b7f741d0a45499d679626;
-            this.pictureBox1.Location = new System.Drawing.Point(4, 1);
+            this.pictureBox1.Location = new System.Drawing.Point(81, 1);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(29, 22);
+            this.pictureBox1.Size = new System.Drawing.Size(28, 22);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 13;
             this.pictureBox1.TabStop = false;
@@ -173,35 +209,14 @@ namespace ScreenCapturing
             // 
             // pbspeaker
             // 
-            this.pbspeaker.Image = ((System.Drawing.Image)(resources.GetObject("pbspeaker.Image")));
-            this.pbspeaker.Location = new System.Drawing.Point(66, -2);
+            this.pbspeaker.Image = global::ScreenCapturing.Properties.Resources.su;
+            this.pbspeaker.Location = new System.Drawing.Point(0, 0);
             this.pbspeaker.Name = "pbspeaker";
-            this.pbspeaker.Size = new System.Drawing.Size(34, 26);
+            this.pbspeaker.Size = new System.Drawing.Size(32, 23);
             this.pbspeaker.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbspeaker.TabIndex = 12;
             this.pbspeaker.TabStop = false;
             this.pbspeaker.Click += new System.EventHandler(this.pbspeaker_Click);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(149, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(23, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "▶";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
-            // 
-            // pbmic
-            // 
-            this.pbmic.Image = ((System.Drawing.Image)(resources.GetObject("pbmic.Image")));
-            this.pbmic.Location = new System.Drawing.Point(100, -4);
-            this.pbmic.Name = "pbmic";
-            this.pbmic.Size = new System.Drawing.Size(23, 30);
-            this.pbmic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbmic.TabIndex = 11;
-            this.pbmic.TabStop = false;
-            this.pbmic.Click += new System.EventHandler(this.pbmic_Click);
             // 
             // label1
             // 
@@ -231,13 +246,19 @@ namespace ScreenCapturing
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Text = "Form1";
             this.TransparencyKey = System.Drawing.Color.DarkGray;
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form_MouseUp);
             this.panel4.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CastingTouglebtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbmic)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbspeaker)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pbmic)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -247,8 +268,6 @@ namespace ScreenCapturing
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
@@ -257,6 +276,9 @@ namespace ScreenCapturing
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox CastingTouglebtn;
+        private System.Windows.Forms.PictureBox pictureBox5;
     }
 }
 
