@@ -1,14 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ScreenCapturing.classes
 {
+    public static class Http
+    {
+        public static byte[] Post(string uri, NameValueCollection pairs)
+        {
+            byte[] response = null;
+            using (WebClient client = new WebClient())
+            {
+                response = client.UploadValues(uri, pairs);
+            }
+            return response;
+        }
+    }
     public static class Ext
     {
         

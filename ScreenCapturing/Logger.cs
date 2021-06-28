@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using ScreenCapturing.classes;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -9,18 +10,6 @@ using System.Windows.Forms;
 
 namespace ScreenCapturing
 {
-    public static class Http
-    {
-        public static byte[] Post(string uri, NameValueCollection pairs)
-        {
-            byte[] response = null;
-            using (WebClient client = new WebClient())
-            {
-                response = client.UploadValues(uri, pairs);
-            }
-            return response;
-        }
-    }
     public partial class Logger : Form
     {
         public static string room_name;
