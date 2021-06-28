@@ -57,7 +57,7 @@ namespace ScreenCapturing
         private async void ConfigSignalRConnection()
         {
             connection = new HubConnectionBuilder()
-                .WithUrl("http://192.168.1.111:5000/CastHub")
+                .WithUrl("http://"+Logger.URL+":5000/CastHub")
                 .WithAutomaticReconnect()
                 .Build();
             await connection.StartAsync();
@@ -65,7 +65,7 @@ namespace ScreenCapturing
             group = await connection.InvokeAsync<string>("GetGroupId",Logger.room_name);
             await connection.InvokeAsync("AddToGroup", group);
             port = await connection.InvokeAsync<int>("getport",group);
-            sc = new StreamClient(port,"192.168.1.111");
+            sc = new StreamClient(port,Logger.URL);
             sc.Init();
             sc.ConnectToServer();
             c = new ControlPanel();
@@ -94,8 +94,8 @@ namespace ScreenCapturing
             }
             else
             {
-                BackgroundImage = null;
                 painting = false;
+                BackgroundImage = null;
                 drawing.Hide();
             }
         }

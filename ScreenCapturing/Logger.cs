@@ -25,6 +25,9 @@ namespace ScreenCapturing
     {
         public static string room_name;
         public static Form1 form1;
+        public static string URL = "192.168.1.111";
+
+        [Obsolete]
         public Logger()
         {
             InitializeComponent();
@@ -38,13 +41,15 @@ namespace ScreenCapturing
             session_list.Items.Clear();
             try
             {
-                var response = Http.Post("http://192.168.1.111:5000/api/Rooms/GetRooms", new NameValueCollection() {});
+                var response = Http.Post("http://"+URL+":5000/api/Rooms/GetRooms", new NameValueCollection() {});
                 string result = Encoding.UTF8.GetString(response);
                 SessionList = Json.Decode<List<string>>(result);
                 foreach (var session in SessionList) session_list.Items.Add(session);
             }
             catch { MessageBox.Show("فشل الوصول للخادم"); }
         }
+
+        [Obsolete]
         private void Session_list_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (session_list.SelectedIndex != -1)
@@ -72,16 +77,15 @@ namespace ScreenCapturing
             string myJson = "{\"room_name\": \""+room_name+"\"}";
             using (var client = new HttpClient())
             {
-                var response = await client.PostAsync("http://192.168.1.111:5000/api/Rooms/"+action,
+                var response = await client.PostAsync("http://"+URL+":5000/api/Rooms/"+action,
                     new StringContent(myJson, Encoding.UTF8, "application/json"));
                 if(action=="CreateRoom")if(!bool.Parse(response.Content.ReadAsStringAsync().Result))MessageBox.Show("فشل إنشاء المحاضرة");
                 Get_sessions();
             }
         }
-        void Createroom()
-        {
-            post("CreateRoom", creatroomname_tb.Text);
-        }
+        void Createroom() => post("CreateRoom", creatroomname_tb.Text);
+
+        [Obsolete]
         private void Login_btn_Click(object sender, EventArgs e)
         {
             if (session_list.SelectedIndex != -1)
