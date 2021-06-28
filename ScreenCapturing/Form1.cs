@@ -42,6 +42,7 @@ namespace ScreenCapturing
         bool Casting = false;
         Point lastPoint = Point.Empty;
 
+        [Obsolete]
         public Form1()
         {
             InitializeComponent();
@@ -51,6 +52,8 @@ namespace ScreenCapturing
             TopMost = true;
             ConfigSignalRConnection();
         }
+
+        [Obsolete]
         private async void ConfigSignalRConnection()
         {
             connection = new HubConnectionBuilder()
@@ -72,8 +75,8 @@ namespace ScreenCapturing
             caster = new Thread(Cast);
             bgw = new BackgroundWorker();
             bgw.DoWork += SendUpdates;
-            bgw.RunWorkerAsync();
             caster.Start();
+            caster.Suspend();
         }
         void drawingbtn_Click(Object sender,EventArgs e)
         {
@@ -82,13 +85,12 @@ namespace ScreenCapturing
                 painting = true;
                 drawing.Show();
                 drawing.Top = Bottom;
-                drawing.Left = Right - 250;
+                drawing.Left = Right - 230;
                 todraw = new Bitmap(Width, Height - 23, quality);
                 using (Graphics g = Graphics.FromImage(todraw))
-                {
                     g.CopyFromScreen(Left, Top, 0, 0, new Size(Width, Height), CopyPixelOperation.SourceCopy);
-                }
-                BackgroundImage = clean = todraw;
+                BackgroundImage = todraw;
+                clean = todraw.Clone(new Rectangle(new Point(0,0),new Size(todraw.Width,todraw.Height)),PixelFormat.Format24bppRgb);
             }
             else
             {
@@ -100,49 +102,61 @@ namespace ScreenCapturing
         private void CaptureImage()
         {
             Bitmap b = new Bitmap(Width, Height - 23, quality);
-            using (Graphics g = Graphics.FromImage(b))
+            try
             {
-                g.CopyFromScreen(Left, Top, 0, 0, new Size(Width, Height - 23), CopyPixelOperation.SourceCopy);
-                User32.CURSORINFO cursorInfo;
-                cursorInfo.cbSize = Marshal.SizeOf(typeof(User32.CURSORINFO));
-
-                if (User32.GetCursorInfo(out cursorInfo))
+                using (Graphics g = Graphics.FromImage(b))
                 {
-                    // if the cursor is showing draw it on the screen shot
-                    if (cursorInfo.flags == User32.CURSOR_SHOWING)
+                    g.CopyFromScreen(Left, Top, 0, 0, new Size(Width, Height - 23), CopyPixelOperation.SourceCopy);
+                    User32.CURSORINFO cursorInfo;
+                    cursorInfo.cbSize = Marshal.SizeOf(typeof(User32.CURSORINFO));
+
+                    if (User32.GetCursorInfo(out cursorInfo))
                     {
-                        // we need to get hotspot so we can draw the cursor in the correct position
-                        var iconPointer = User32.CopyIcon(cursorInfo.hCursor);
-                        User32.ICONINFO iconInfo;
-                        int iconX, iconY;
-
-                        if (User32.GetIconInfo(iconPointer, out iconInfo))
+                        // if the cursor is showing draw it on the screen shot
+                        if (cursorInfo.flags == User32.CURSOR_SHOWING)
                         {
-                            // calculate the correct position of the cursor
-                            iconX = cursorInfo.ptScreenPos.x - ((int)iconInfo.xHotspot) - this.Left;
-                            iconY = cursorInfo.ptScreenPos.y - ((int)iconInfo.yHotspot) - this.Top;
+                            // we need to get hotspot so we can draw the cursor in the correct position
+                            var iconPointer = User32.CopyIcon(cursorInfo.hCursor);
+                            User32.ICONINFO iconInfo;
+                            int iconX, iconY;
 
-                            // draw the cursor icon on top of the captured screen image
-                            User32.DrawIcon(g.GetHdc(), iconX, iconY, cursorInfo.hCursor);
+                            if (User32.GetIconInfo(iconPointer, out iconInfo))
+                            {
+                                // calculate the correct position of the cursor
+                                iconX = cursorInfo.ptScreenPos.x - ((int)iconInfo.xHotspot) - this.Left;
+                                iconY = cursorInfo.ptScreenPos.y - ((int)iconInfo.yHotspot) - this.Top;
 
-                            // release the handle created by call to g.GetHdc()
-                            g.ReleaseHdc();
+                                // draw the cursor icon on top of the captured screen image
+                                User32.DrawIcon(g.GetHdc(), iconX, iconY, cursorInfo.hCursor);
+
+                                // release the handle created by call to g.GetHdc()
+                                g.ReleaseHdc();
+                            }
                         }
                     }
                 }
             }
+            catch { }
             srclist.Add(Ext.Resized(b));
         }
 
+        [Obsolete]
         private void CastinTougle_Click(object sender, EventArgs e)
         {
+            if (Casting) caster.Suspend();
+            else
+            {
+                caster.Resume();
+                bgw.RunWorkerAsync();
+            }
             Casting = !Casting;
-            CastingTouglebtn.Image =Casting? Resources.pause : Resources.play; 
+            CastingTouglebtn.Image = Casting ? Resources.pause : Resources.play; 
         }
         private void SendUpdates(object sender, DoWorkEventArgs e)
         {
             while (true)
             {
+                if (!Casting) return;
                 if (srclist.Count == 0) continue;
                 Bitmap src = srclist[srclist.Count - 1];
                 srclist.Clear();
@@ -194,11 +208,7 @@ namespace ScreenCapturing
             speaker_muted = !speaker_muted;
             sc.speakertougle();
         }
-        private void btnchat_Click(object sender, EventArgs e)
-        {
-            if (chat==null) chat = new ChatForm();
-            chat.Show();
-        }
+        private void btnchat_Click(object sender, EventArgs e) => chat.Show();
 
         private void pbmic_Click(object sender, EventArgs e)
         {
@@ -228,7 +238,7 @@ namespace ScreenCapturing
                 lastPoint = e.Location;//keep assigning the lastPoint to the current mouse position
             }
         }
-        public void Clean() => BackgroundImage = clean;
+        public void Clean() => BackgroundImage = clean.Clone(new Rectangle(new Point(0,0),new Size(clean.Width,clean.Height)),PixelFormat.Format24bppRgb);
         private void Form_MouseUp(object sender, MouseEventArgs e)
         {
             isMouseDown = false;
@@ -262,7 +272,7 @@ namespace ScreenCapturing
                     c.Left = Right;
                     c.Top = Top;
                     drawing.Top = Bottom;
-                    drawing.Left = Right - 250;
+                    drawing.Left = Right - 230;
                 }
             }
             Cursor = Cursors.Default;
@@ -276,20 +286,18 @@ namespace ScreenCapturing
             if (isMouseDown)
             {
                 Width = Cursor.Position.X - Left > 0 ? Cursor.Position.X - Left : 0;
-                if(c!=null) c.Left = Right;
+                if (c != null) { c.Left = Right; drawing.Left = Right - 230; }
             }
         }
         private void Label1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isMouseDown) Height = Cursor.Position.Y - Top > 0 ? Cursor.Position.Y - Top : 0;
+            if (isMouseDown)
+            {
+                Height = Cursor.Position.Y - Top > 0 ? Cursor.Position.Y - Top : 0;
+                drawing.Top = Bottom;
+            }
         }
-        private void Closebtn_Click(object sender, EventArgs e)
-        {
-            sc.ConnectToServer();
-            if (caster != null) caster.Abort();
-            Program.logger.Dispose();
-            Close();
-        }
+        private void Closebtn_Click(object sender, EventArgs e) => Close();
         private void L2_MouseMove(object sender, MouseEventArgs e)
         {
             if (isMouseDown)
@@ -300,10 +308,25 @@ namespace ScreenCapturing
                 {
                     c.Left = Right;
                     c.Top = Top;
+                    drawing.Top = Bottom;
+                    drawing.Left = Right - 230;
                 }
                 
             }
         }
+
+        [Obsolete]
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            sc.ConnectToServer();
+            bgw.Dispose();
+            if (caster != null) { 
+                if (caster.ThreadState == ThreadState.Suspended) caster.Resume(); 
+                caster.Abort(); 
+            }
+            Program.logger.Dispose();
+        }
+
         private void settingsbtn_Click(object sender, EventArgs e)
         {
             if (c == null) c = new ControlPanel();

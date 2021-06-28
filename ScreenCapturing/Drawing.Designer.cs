@@ -38,7 +38,7 @@ namespace ScreenCapturing
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(36, 7);
+            this.numericUpDown1.Location = new System.Drawing.Point(43, 12);
             this.numericUpDown1.Maximum = new decimal(new int[] {
             20,
             0,
@@ -61,15 +61,15 @@ namespace ScreenCapturing
             // 
             // labelcolor
             // 
-            this.labelcolor.Location = new System.Drawing.Point(12, 10);
+            this.labelcolor.Location = new System.Drawing.Point(19, 14);
             this.labelcolor.Name = "labelcolor";
-            this.labelcolor.Size = new System.Drawing.Size(18, 17);
+            this.labelcolor.Size = new System.Drawing.Size(18, 18);
             this.labelcolor.TabIndex = 3;
             this.labelcolor.Click += new System.EventHandler(this.btnpickcolor_Click);
             // 
             // btnerase
             // 
-            this.btnerase.Location = new System.Drawing.Point(128, 5);
+            this.btnerase.Location = new System.Drawing.Point(135, 10);
             this.btnerase.Name = "btnerase";
             this.btnerase.Size = new System.Drawing.Size(75, 23);
             this.btnerase.TabIndex = 4;
@@ -81,7 +81,7 @@ namespace ScreenCapturing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(250, 117);
+            this.ClientSize = new System.Drawing.Size(230, 50);
             this.Controls.Add(this.btnerase);
             this.Controls.Add(this.labelcolor);
             this.Controls.Add(this.numericUpDown1);

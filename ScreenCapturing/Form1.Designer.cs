@@ -117,9 +117,9 @@ namespace ScreenCapturing
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Cursor = System.Windows.Forms.Cursors.Default;
             this.panel1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel1.Location = new System.Drawing.Point(550, 2);
+            this.panel1.Location = new System.Drawing.Point(570, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(250, 24);
+            this.panel1.Size = new System.Drawing.Size(230, 24);
             this.panel1.TabIndex = 9;
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.L1_MouseDown);
             this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.L1_MouseMove);
@@ -136,7 +136,7 @@ namespace ScreenCapturing
             this.panel2.Controls.Add(this.l2);
             this.panel2.Controls.Add(this.pbspeaker);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(49, 0);
+            this.panel2.Location = new System.Drawing.Point(29, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(201, 24);
             this.panel2.TabIndex = 13;
@@ -246,6 +246,7 @@ namespace ScreenCapturing
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Text = "Form1";
             this.TransparencyKey = System.Drawing.Color.DarkGray;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form_MouseUp);
