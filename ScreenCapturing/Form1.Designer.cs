@@ -46,6 +46,7 @@ namespace ScreenCapturing
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pbspeaker = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.pbpaintboard = new System.Windows.Forms.PictureBox();
             this.panel4.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -56,6 +57,7 @@ namespace ScreenCapturing
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbspeaker)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbpaintboard)).BeginInit();
             this.SuspendLayout();
             // 
             // label2
@@ -232,12 +234,26 @@ namespace ScreenCapturing
             this.label1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Label1_MouseMove);
             this.label1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.L1_MouseUp);
             // 
+            // pbpaintboard
+            // 
+            this.pbpaintboard.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbpaintboard.Location = new System.Drawing.Point(2, 2);
+            this.pbpaintboard.Name = "pbpaintboard";
+            this.pbpaintboard.Size = new System.Drawing.Size(796, 422);
+            this.pbpaintboard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbpaintboard.TabIndex = 10;
+            this.pbpaintboard.TabStop = false;
+            this.pbpaintboard.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form_MouseDown);
+            this.pbpaintboard.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form_MouseMove);
+            this.pbpaintboard.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form_MouseUp);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.DarkGray;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.pbpaintboard);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.panel4);
@@ -261,6 +277,7 @@ namespace ScreenCapturing
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbspeaker)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbpaintboard)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -281,6 +298,7 @@ namespace ScreenCapturing
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox CastingTouglebtn;
         private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.PictureBox pbpaintboard;
     }
 }
 

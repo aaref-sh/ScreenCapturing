@@ -86,16 +86,16 @@ namespace ScreenCapturing
                 drawing.Show();
                 drawing.Top = Bottom;
                 drawing.Left = Right - 230;
-                todraw = new Bitmap(Width, Height - 23, quality);
+                todraw = new Bitmap(pbpaintboard.Width,pbpaintboard.Height, quality);
                 using (Graphics g = Graphics.FromImage(todraw))
-                    g.CopyFromScreen(Left, Top, 0, 0, new Size(Width, Height), CopyPixelOperation.SourceCopy);
-                BackgroundImage = todraw;
+                    g.CopyFromScreen(Left+2, Top+2, 0, 0, new Size(pbpaintboard.Width, pbpaintboard.Height), CopyPixelOperation.SourceCopy);
+                pbpaintboard.Image = todraw;
                 clean = todraw.Clone(new Rectangle(new Point(0,0),new Size(todraw.Width,todraw.Height)),PixelFormat.Format24bppRgb);
             }
             else
             {
                 painting = false;
-                BackgroundImage = null;
+                pbpaintboard.Image = null;
                 drawing.Hide();
             }
         }
@@ -219,32 +219,41 @@ namespace ScreenCapturing
         }
         private void Form_MouseDown(object sender, MouseEventArgs e)
         {
-            lastPoint = e.Location;//we assign the lastPoint to the current mouse position: e.Location ('e' is from the MouseEventArgs passed into the MouseDown event)
-            isMouseDown = true;//we set to true because our mouse button is down (clicked)
+            lastPoint = e.Location;
+            isMouseDown = true;
         }
         private void Form_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isMouseDown)//check to see if the mouse button is down
+            if (isMouseDown)
             {
-                //pbpaintboard.Image = BackgroundImage;
-                using (Graphics g = Graphics.FromImage(BackgroundImage))
-                {//we need to create a Graphics object to draw on the picture box, its our main tool
-                    //when making a Pen object, you can just give it color only or give it color and pen size
+                using (Graphics g = Graphics.FromImage(pbpaintboard.Image))
+                {
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                     g.DrawLine(new Pen(drawing.colorDialog1.Color, Drawing.thickness), lastPoint, e.Location);
-                    //this is to give the drawing a more smoother, less sharper look
                 }
-                Invalidate();
-                lastPoint = e.Location;//keep assigning the lastPoint to the current mouse position
+                pbpaintboard.Invalidate();
+                lastPoint = e.Location;
             }
         }
-        public void Clean() => BackgroundImage = clean.Clone(new Rectangle(new Point(0,0),new Size(clean.Width,clean.Height)),PixelFormat.Format24bppRgb);
+        public void Clean() => pbpaintboard.Image = clean.Clone(new Rectangle(new Point(0,0),new Size(clean.Width,clean.Height)),PixelFormat.Format24bppRgb);
         private void Form_MouseUp(object sender, MouseEventArgs e)
         {
             isMouseDown = false;
             lastPoint = Point.Empty;
-            //set the previous point back to null if the user lets go of the mouse button
         }
+
+        [Obsolete]
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            sc.ConnectToServer();
+            bgw.Dispose();
+            if (caster != null) { 
+                if (caster.ThreadState == ThreadState.Suspended) caster.Resume(); 
+                caster.Abort(); 
+            }
+            Program.logger.Dispose();
+        }
+        private void Closebtn_Click(object sender, EventArgs e) => Close();
 
         #region resize and drag
         private void L1_MouseDown(object sender, MouseEventArgs e)
@@ -297,7 +306,6 @@ namespace ScreenCapturing
                 drawing.Top = Bottom;
             }
         }
-        private void Closebtn_Click(object sender, EventArgs e) => Close();
         private void L2_MouseMove(object sender, MouseEventArgs e)
         {
             if (isMouseDown)
@@ -315,17 +323,6 @@ namespace ScreenCapturing
             }
         }
 
-        [Obsolete]
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            sc.ConnectToServer();
-            bgw.Dispose();
-            if (caster != null) { 
-                if (caster.ThreadState == ThreadState.Suspended) caster.Resume(); 
-                caster.Abort(); 
-            }
-            Program.logger.Dispose();
-        }
 
         private void settingsbtn_Click(object sender, EventArgs e)
         {

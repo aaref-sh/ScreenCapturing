@@ -27,9 +27,9 @@ namespace ScreenCapturing
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
+        [System.Obsolete]
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.creatroomname_tb = new System.Windows.Forms.TextBox();
             this.create_btn = new System.Windows.Forms.Button();
@@ -42,16 +42,6 @@ namespace ScreenCapturing
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(478, 40);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 19);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "إنشاء محاضرة";
             // 
             // label2
             // 
@@ -72,6 +62,7 @@ namespace ScreenCapturing
             this.creatroomname_tb.Name = "creatroomname_tb";
             this.creatroomname_tb.Size = new System.Drawing.Size(345, 22);
             this.creatroomname_tb.TabIndex = 1;
+            this.creatroomname_tb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.creatroomname_tb_KeyDown);
             // 
             // create_btn
             // 
@@ -116,7 +107,6 @@ namespace ScreenCapturing
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.create_btn);
-            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.creatroomname_tb);
             this.groupBox1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox1.Location = new System.Drawing.Point(12, 8);
@@ -133,6 +123,7 @@ namespace ScreenCapturing
             this.groupBox2.Controls.Add(this.session_list);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.login_btn);
+            this.groupBox2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBox2.Location = new System.Drawing.Point(12, 88);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(570, 213);
@@ -174,7 +165,9 @@ namespace ScreenCapturing
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("Times New Roman", 12F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximizeBox = false;
             this.Name = "Logger";
             this.RightToLeftLayout = true;
             this.Text = "Logger";
@@ -187,8 +180,6 @@ namespace ScreenCapturing
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox creatroomname_tb;
         private System.Windows.Forms.Button create_btn;

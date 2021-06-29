@@ -63,14 +63,18 @@ namespace ScreenCapturing
         }
         async void post(string action,string room_name)
         {
-            string myJson = "{\"room_name\": \""+room_name+"\"}";
-            using (var client = new HttpClient())
+            try
             {
-                var response = await client.PostAsync("http://"+URL+":5000/api/Rooms/"+action,
-                    new StringContent(myJson, Encoding.UTF8, "application/json"));
-                if(action=="CreateRoom")if(!bool.Parse(response.Content.ReadAsStringAsync().Result))MessageBox.Show("فشل إنشاء المحاضرة");
-                Get_sessions();
+                string myJson = "{\"room_name\": \"" + room_name + "\"}";
+                using (var client = new HttpClient())
+                {
+                    var response = await client.PostAsync("http://" + URL + ":5000/api/Rooms/" + action,
+                        new StringContent(myJson, Encoding.UTF8, "application/json"));
+                    if (action == "CreateRoom") if (!bool.Parse(response.Content.ReadAsStringAsync().Result)) MessageBox.Show("فشل إنشاء المحاضرة");
+                    Get_sessions();
+                }
             }
+            catch { MessageBox.Show("فشل الوصول للخادم"); }
         }
         void Createroom() => post("CreateRoom", creatroomname_tb.Text);
 
@@ -99,6 +103,10 @@ namespace ScreenCapturing
             catch { MessageBox.Show("فشل الحذف"); }
         }
         private void updatelistbtn_Click(object sender, EventArgs e) => Get_sessions();
-        
+
+        private void creatroomname_tb_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter) Create_btn_Click(sender, e);
+        }
     }
 }
