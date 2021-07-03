@@ -24,7 +24,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>3</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -62,6 +62,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>logo2.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DarrenLee.LiveStream">
@@ -323,6 +326,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Logger.resx">
       <DependentUpon>Logger.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -359,6 +363,8 @@
     <None Include="Resources\Race5b6ada15b7f741d0a45499d679626.png" />
     <None Include="Resources\settings.png" />
     <None Include="Resources\close.png" />
+    <Content Include="logo %282%29.ico" />
+    <Content Include="logo2.ico" />
     <Content Include="Resources\chatbg.jpg" />
     <Content Include="Resources\m.png" />
     <None Include="Resources\pause.png" />

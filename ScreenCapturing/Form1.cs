@@ -158,26 +158,28 @@ namespace ScreenCapturing
             {
                 if (!Casting) return;
                 if (srclist.Count == 0) continue;
-                Bitmap src = srclist[srclist.Count - 1];
-                srclist.Clear();
-                if (src != null)
+                using (Bitmap src = srclist[srclist.Count - 1])
                 {
-                    int wdt = src.Width / x, hgt = src.Height / y;
-                    for (int i = 0; i < y; i++)
+                    srclist.Clear();
+                    if (src != null)
                     {
-                        for (int j = 0; j < x; j++)
+                        int wdt = src.Width / x, hgt = src.Height / y;
+                        for (int i = 0; i < y; i++)
                         {
-                            Rectangle r = new Rectangle(new Point(j * wdt, i * hgt), new Size(wdt, hgt));
-                            sa[i, j] = src.Clone(r, src.PixelFormat);
-                            if (!Ext.CompareMemCmp(sa[i, j], prev[i, j]))
+                            for (int j = 0; j < x; j++)
                             {
-                                prev[i, j] = sa[i, j];
-                                using (MemoryStream ms = new MemoryStream())
+                                Rectangle r = new Rectangle(new Point(j * wdt, i * hgt), new Size(wdt, hgt));
+                                sa[i, j] = src.Clone(r, src.PixelFormat);
+                                if (!Ext.CompareMemCmp(sa[i, j], prev[i, j]))
                                 {
-                                    sa[i, j].Save(ms, ImageFormat.Jpeg);
-                                    string base64 = Convert.ToBase64String(ms.ToArray());
-                                    if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
-                                    connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
+                                    prev[i, j] = sa[i, j];
+                                    using (MemoryStream ms = new MemoryStream())
+                                    {
+                                        sa[i, j].Save(ms, ImageFormat.Jpeg);
+                                        string base64 = Convert.ToBase64String(ms.ToArray());
+                                        if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
+                                        connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
+                                    }
                                 }
                             }
                         }

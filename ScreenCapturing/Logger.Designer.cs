@@ -30,6 +30,7 @@ namespace ScreenCapturing
         [System.Obsolete]
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Logger));
             this.label2 = new System.Windows.Forms.Label();
             this.creatroomname_tb = new System.Windows.Forms.TextBox();
             this.create_btn = new System.Windows.Forms.Button();
@@ -166,6 +167,7 @@ namespace ScreenCapturing
             this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("Times New Roman", 12F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "Logger";
