@@ -60,7 +60,7 @@ namespace ScreenCapturing
             this.creatroomname_tb.Location = new System.Drawing.Point(127, 36);
             this.creatroomname_tb.Margin = new System.Windows.Forms.Padding(4);
             this.creatroomname_tb.Name = "creatroomname_tb";
-            this.creatroomname_tb.Size = new System.Drawing.Size(345, 22);
+            this.creatroomname_tb.Size = new System.Drawing.Size(343, 22);
             this.creatroomname_tb.TabIndex = 1;
             this.creatroomname_tb.KeyDown += new System.Windows.Forms.KeyEventHandler(this.creatroomname_tb_KeyDown);
             // 
@@ -83,7 +83,7 @@ namespace ScreenCapturing
             this.login_btn.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.login_btn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.login_btn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.login_btn.Location = new System.Drawing.Point(478, 157);
+            this.login_btn.Location = new System.Drawing.Point(478, 153);
             this.login_btn.Margin = new System.Windows.Forms.Padding(4);
             this.login_btn.Name = "login_btn";
             this.login_btn.Size = new System.Drawing.Size(73, 34);
@@ -136,9 +136,9 @@ namespace ScreenCapturing
             this.updatelistbtn.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.updatelistbtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.updatelistbtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.updatelistbtn.Location = new System.Drawing.Point(478, 55);
+            this.updatelistbtn.Location = new System.Drawing.Point(478, 71);
             this.updatelistbtn.Name = "updatelistbtn";
-            this.updatelistbtn.Size = new System.Drawing.Size(75, 33);
+            this.updatelistbtn.Size = new System.Drawing.Size(73, 33);
             this.updatelistbtn.TabIndex = 5;
             this.updatelistbtn.Text = "تحديث";
             this.updatelistbtn.UseVisualStyleBackColor = true;
@@ -149,7 +149,7 @@ namespace ScreenCapturing
             this.btndelete.FlatAppearance.BorderColor = System.Drawing.Color.Silver;
             this.btndelete.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Gray;
             this.btndelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btndelete.Location = new System.Drawing.Point(478, 114);
+            this.btndelete.Location = new System.Drawing.Point(478, 110);
             this.btndelete.Name = "btndelete";
             this.btndelete.Size = new System.Drawing.Size(73, 36);
             this.btndelete.TabIndex = 4;

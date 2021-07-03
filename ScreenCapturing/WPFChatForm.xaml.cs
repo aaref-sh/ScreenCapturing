@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.AspNetCore.SignalR.Client;
+using ScreenCapturing.classes;
 using TextBlock = Emoji.Wpf.TextBlock;
 
 namespace ScreenCapturing
@@ -37,7 +38,7 @@ namespace ScreenCapturing
             sndr.Foreground = (sender == "Teacher")?Brushes.DarkGreen:Brushes.DarkGray;
             container.MouseDoubleClick += Container_MouseDoubleClick;
             TextBlock mesg = new TextBlock();
-            mesg.Text = message;
+            mesg.Text = Ext.Encoded(message);
             mesg.TextWrapping = TextWrapping.Wrap;
             mesg.FontSize = 16;
             mesg.FontFamily = new FontFamily("Times New Roman");
@@ -86,7 +87,7 @@ namespace ScreenCapturing
         {
             if (MessageTextBox.Text.Trim() != string.Empty)
             {
-                Form1.connection.InvokeAsync("newMessage", MessageTextBox.Text.Trim());
+                Form1.connection.InvokeAsync("newMessage", Ext.Encoded(MessageTextBox.Text.Trim()));
                 MessageTextBox.Text = "";
             }
         }
@@ -100,25 +101,16 @@ namespace ScreenCapturing
             MessageTextBox.Focus();
             if (e.Key == Key.Enter && MessageTextBox.Text.Trim() != string.Empty)
             {
-                Form1.connection.InvokeAsync("newMessage", MessageTextBox.Text.Trim());
+                Form1.connection.InvokeAsync("newMessage",Ext.Encoded(MessageTextBox.Text.Trim()));
                 MessageTextBox.Text = "";
             }
         }
         public void MessageTextBox_TextChanged(object sender, EventArgs e)
         {
             if (MessageTextBox.Text.Trim() != string.Empty)
-            {
                 if (ia(MessageTextBox.Text[0]))
-                {
-                    //MessageTextBox.FlowDirection = FlowDirection.RightToLeft;
-                    MessageTextBox.TextAlignment = TextAlignment.Right;
-                }
-                else
-                {
-                    //MessageTextBox.FlowDirection = FlowDirection.LeftToRight;
-                    MessageTextBox.TextAlignment = TextAlignment.Left;
-                }
-            }
+                    MessageTextBox.FlowDirection = FlowDirection.RightToLeft;
+                else MessageTextBox.FlowDirection = FlowDirection.LeftToRight;
         }
     }
 }

@@ -57,7 +57,7 @@ namespace ScreenCapturing
         private async void ConfigSignalRConnection()
         {
             connection = new HubConnectionBuilder()
-                .WithUrl("http://"+Logger.URL+":5000/CastHub")
+                .WithUrl("http://"+Logger.URL+"/CastHub")
                 .WithAutomaticReconnect()
                 .Build();
             await connection.StartAsync();
@@ -65,9 +65,6 @@ namespace ScreenCapturing
             group = await connection.InvokeAsync<string>("GetGroupId",Logger.room_name);
             await connection.InvokeAsync("AddToGroup", group);
             port = await connection.InvokeAsync<int>("getport",group);
-            sc = new StreamClient(port,Logger.URL);
-            sc.Init();
-            sc.ConnectToServer();
             c = new ControlPanel();
             chat = new ChatForm();
             drawing = new Drawing();
@@ -77,6 +74,9 @@ namespace ScreenCapturing
             bgw.DoWork += SendUpdates;
             caster.Start();
             caster.Suspend();
+            sc = new StreamClient(port, Logger.URL);
+            sc.Init();
+            sc.ConnectToServer();
         }
         void drawingbtn_Click(Object sender,EventArgs e)
         {
@@ -90,7 +90,7 @@ namespace ScreenCapturing
                 using (Graphics g = Graphics.FromImage(todraw))
                     g.CopyFromScreen(Left+2, Top+2, 0, 0, new Size(pbpaintboard.Width, pbpaintboard.Height), CopyPixelOperation.SourceCopy);
                 pbpaintboard.Image = todraw;
-                clean = todraw.Clone(new Rectangle(new Point(0,0),new Size(todraw.Width,todraw.Height)),PixelFormat.Format24bppRgb);
+                clean = (Bitmap)todraw.Clone();
             }
             else
             {
@@ -101,43 +101,43 @@ namespace ScreenCapturing
         }
         private void CaptureImage()
         {
-            Bitmap b = new Bitmap(Width, Height - 23, quality);
-            try
-            {
-                using (Graphics g = Graphics.FromImage(b))
+            using (Bitmap b = new Bitmap(Width, Height - 23, quality))
+                try
                 {
-                    g.CopyFromScreen(Left, Top, 0, 0, new Size(Width, Height - 23), CopyPixelOperation.SourceCopy);
-                    User32.CURSORINFO cursorInfo;
-                    cursorInfo.cbSize = Marshal.SizeOf(typeof(User32.CURSORINFO));
-
-                    if (User32.GetCursorInfo(out cursorInfo))
+                    using (Graphics g = Graphics.FromImage(b))
                     {
-                        // if the cursor is showing draw it on the screen shot
-                        if (cursorInfo.flags == User32.CURSOR_SHOWING)
+                        g.CopyFromScreen(Left, Top, 0, 0, new Size(Width, Height - 23), CopyPixelOperation.SourceCopy);
+                        User32.CURSORINFO cursorInfo;
+                        cursorInfo.cbSize = Marshal.SizeOf(typeof(User32.CURSORINFO));
+
+                        if (User32.GetCursorInfo(out cursorInfo))
                         {
-                            // we need to get hotspot so we can draw the cursor in the correct position
-                            var iconPointer = User32.CopyIcon(cursorInfo.hCursor);
-                            User32.ICONINFO iconInfo;
-                            int iconX, iconY;
-
-                            if (User32.GetIconInfo(iconPointer, out iconInfo))
+                            // if the cursor is showing draw it on the screen shot
+                            if (cursorInfo.flags == User32.CURSOR_SHOWING)
                             {
-                                // calculate the correct position of the cursor
-                                iconX = cursorInfo.ptScreenPos.x - ((int)iconInfo.xHotspot) - this.Left;
-                                iconY = cursorInfo.ptScreenPos.y - ((int)iconInfo.yHotspot) - this.Top;
+                                // we need to get hotspot so we can draw the cursor in the correct position
+                                var iconPointer = User32.CopyIcon(cursorInfo.hCursor);
+                                User32.ICONINFO iconInfo;
+                                int iconX, iconY;
 
-                                // draw the cursor icon on top of the captured screen image
-                                User32.DrawIcon(g.GetHdc(), iconX, iconY, cursorInfo.hCursor);
+                                if (User32.GetIconInfo(iconPointer, out iconInfo))
+                                {
+                                    // calculate the correct position of the cursor
+                                    iconX = cursorInfo.ptScreenPos.x - ((int)iconInfo.xHotspot) - this.Left;
+                                    iconY = cursorInfo.ptScreenPos.y - ((int)iconInfo.yHotspot) - this.Top;
 
-                                // release the handle created by call to g.GetHdc()
-                                g.ReleaseHdc();
+                                    // draw the cursor icon on top of the captured screen image
+                                    User32.DrawIcon(g.GetHdc(), iconX, iconY, cursorInfo.hCursor);
+
+                                    // release the handle created by call to g.GetHdc()
+                                    g.ReleaseHdc();
+                                }
                             }
                         }
                     }
+                    srclist.Add((Bitmap)Ext.Resized(b).Clone());
                 }
-            }
-            catch { }
-            srclist.Add(Ext.Resized(b));
+                catch { }
         }
 
         [Obsolete]
@@ -235,7 +235,7 @@ namespace ScreenCapturing
                 lastPoint = e.Location;
             }
         }
-        public void Clean() => pbpaintboard.Image = clean.Clone(new Rectangle(new Point(0,0),new Size(clean.Width,clean.Height)),PixelFormat.Format24bppRgb);
+        public void Clean() => pbpaintboard.Image = (Image)clean.Clone();
         private void Form_MouseUp(object sender, MouseEventArgs e)
         {
             isMouseDown = false;
