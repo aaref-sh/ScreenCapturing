@@ -81,6 +81,7 @@ namespace ScreenCapturing
             // 
             // top_bar
             // 
+            this.top_bar.BackColor = System.Drawing.Color.White;
             this.top_bar.Controls.Add(this.close_btn);
             this.top_bar.Controls.Add(this.top_side);
             this.top_bar.Cursor = System.Windows.Forms.Cursors.Default;
@@ -129,7 +130,7 @@ namespace ScreenCapturing
             this.elementHost1.Location = new System.Drawing.Point(2, 33);
             this.elementHost1.Name = "elementHost1";
             this.elementHost1.Size = new System.Drawing.Size(327, 505);
-            this.elementHost1.TabIndex = 0;
+            this.elementHost1.TabIndex = 7;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.wpfChatForm1;
             // 
@@ -137,7 +138,7 @@ namespace ScreenCapturing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(332, 541);
             this.Controls.Add(this.elementHost1);
             this.Controls.Add(this.top_bar);
@@ -155,9 +156,6 @@ namespace ScreenCapturing
         }
 
         #endregion
-
-        private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private WPFChatForm wpfChatForm1;
         private System.Windows.Forms.Label right_side;
         private System.Windows.Forms.Panel bottom_side;
         private System.Windows.Forms.Label corner_resizer;
@@ -165,5 +163,7 @@ namespace ScreenCapturing
         private System.Windows.Forms.PictureBox close_btn;
         private System.Windows.Forms.Label top_side;
         private System.Windows.Forms.Label left_side;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private WPFChatForm wpfChatForm1;
     }
 }

@@ -112,5 +112,10 @@ namespace ScreenCapturing
                     MessageTextBox.FlowDirection = FlowDirection.RightToLeft;
                 else MessageTextBox.FlowDirection = FlowDirection.LeftToRight;
         }
+
+        private void MessageList_MouseMove(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("shit");
+        }
     }
 }
