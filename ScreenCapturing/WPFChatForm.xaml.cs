@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.AspNetCore.SignalR.Client;
 using ScreenCapturing.classes;
 using TextBlock = Emoji.Wpf.TextBlock;
@@ -17,11 +18,9 @@ namespace ScreenCapturing
         public WPFChatForm()
         {
             InitializeComponent();
+            sendimg.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + "/Resources/ic_menu_send.png"));
         }
-        public void adds()
-        {
-            Form1.connection.On<string, string>("newMessage", NewMessage);
-        }
+        public void adds() => Form1.connection.On<string, string>("newMessage", NewMessage);
         void NewMessage(string sender,string message)
         {
             Border b = new Border();
@@ -91,10 +90,7 @@ namespace ScreenCapturing
                 MessageTextBox.Text = "";
             }
         }
-        private void picker_Picked(object sender, Emoji.Wpf.EmojiPickedEventArgs e)
-        {
-            MessageTextBox.Text += e.Emoji;
-        }
+        private void picker_Picked(object sender, Emoji.Wpf.EmojiPickedEventArgs e) => MessageTextBox.Text += e.Emoji;
         public void MessageTextBox_KeyDown(object sender, KeyEventArgs e)
         {
             picker.Focus();

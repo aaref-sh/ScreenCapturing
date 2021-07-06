@@ -29,6 +29,7 @@ namespace ScreenCapturing
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Drawing));
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.labelcolor = new System.Windows.Forms.Label();
@@ -86,6 +87,7 @@ namespace ScreenCapturing
             this.Controls.Add(this.labelcolor);
             this.Controls.Add(this.numericUpDown1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Drawing";
             this.Text = "Drawing";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();

@@ -57,14 +57,14 @@ namespace ScreenCapturing
         private async void ConfigSignalRConnection()
         {
             connection = new HubConnectionBuilder()
-                .WithUrl("http://"+Logger.URL+"/CastHub")
+                .WithUrl("http://" + Logger.URL + "/CastHub")
                 .WithAutomaticReconnect()
                 .Build();
             await connection.StartAsync();
             await connection.InvokeAsync("SetName", "Teacher");
-            group = await connection.InvokeAsync<string>("GetGroupId",Logger.room_name);
+            group = await connection.InvokeAsync<string>("GetGroupId", Logger.room_name);
             await connection.InvokeAsync("AddToGroup", group);
-            port = await connection.InvokeAsync<int>("getport",group);
+            port = await connection.InvokeAsync<int>("getport", group);
             c = new ControlPanel();
             chat = new ChatForm();
             drawing = new Drawing();
@@ -78,7 +78,7 @@ namespace ScreenCapturing
             sc.Init();
             sc.ConnectToServer();
         }
-        void drawingbtn_Click(Object sender,EventArgs e)
+        void drawingbtn_Click(Object sender, EventArgs e)
         {
             if (!painting)
             {
@@ -86,9 +86,9 @@ namespace ScreenCapturing
                 drawing.Show();
                 drawing.Top = Bottom;
                 drawing.Left = Right - 230;
-                todraw = new Bitmap(pbpaintboard.Width,pbpaintboard.Height, quality);
+                todraw = new Bitmap(pbpaintboard.Width, pbpaintboard.Height, quality);
                 using (Graphics g = Graphics.FromImage(todraw))
-                    g.CopyFromScreen(Left+2, Top+2, 0, 0, new Size(pbpaintboard.Width, pbpaintboard.Height), CopyPixelOperation.SourceCopy);
+                    g.CopyFromScreen(Left + 2, Top + 2, 0, 0, new Size(pbpaintboard.Width, pbpaintboard.Height), CopyPixelOperation.SourceCopy);
                 pbpaintboard.Image = todraw;
                 clean = (Bitmap)todraw.Clone();
             }
@@ -150,7 +150,7 @@ namespace ScreenCapturing
                 bgw.RunWorkerAsync();
             }
             Casting = !Casting;
-            CastingTouglebtn.Image = Casting ? Resources.pause : Resources.play; 
+            CastingTouglebtn.Image = Casting ? Resources.pause : Resources.play;
         }
         private void SendUpdates(object sender, DoWorkEventArgs e)
         {
@@ -201,8 +201,8 @@ namespace ScreenCapturing
                 }
             }
         }
-        
-        
+
+
         private void pbspeaker_Click(object sender, EventArgs e)
         {
             if (speaker_muted) pbspeaker.Image = Resources.su;
@@ -249,9 +249,11 @@ namespace ScreenCapturing
         {
             sc.ConnectToServer();
             bgw.Dispose();
-            if (caster != null) { 
-                if (caster.ThreadState == ThreadState.Suspended) caster.Resume(); 
-                caster.Abort(); 
+            if (caster != null)
+            {
+                caster.Suspend();
+                caster.Resume();
+                caster.Abort();
             }
             Program.logger.Dispose();
         }
@@ -278,7 +280,7 @@ namespace ScreenCapturing
                 Left = Cursor.Position.X - posX;
                 Left = Math.Max(Left, 0);
                 Left = Math.Min(Right, Screen.PrimaryScreen.Bounds.Width) - Width;
-                if(c!=null)
+                if (c != null)
                 {
                     c.Left = Right;
                     c.Top = Top;
@@ -314,14 +316,14 @@ namespace ScreenCapturing
             {
                 Width = Cursor.Position.X - Left;
                 Height = Cursor.Position.Y - Top;
-                if(c!=null)
+                if (c != null)
                 {
                     c.Left = Right;
                     c.Top = Top;
                     drawing.Top = Bottom;
                     drawing.Left = Right - 230;
                 }
-                
+
             }
         }
 

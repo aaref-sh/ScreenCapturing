@@ -236,6 +236,7 @@ namespace ScreenCapturing
             // 
             // pbpaintboard
             // 
+            this.pbpaintboard.Cursor = System.Windows.Forms.Cursors.Cross;
             this.pbpaintboard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbpaintboard.Location = new System.Drawing.Point(2, 2);
             this.pbpaintboard.Name = "pbpaintboard";
@@ -259,6 +260,7 @@ namespace ScreenCapturing
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.label4);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Text = "Form1";
