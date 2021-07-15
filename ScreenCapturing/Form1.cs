@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using VoiceClient;
@@ -69,6 +70,7 @@ namespace ScreenCapturing
             chat = new ChatForm();
             drawing = new Drawing();
             Ext.pass = group;
+            WPFChatForm.key = ASCIIEncoding.ASCII.GetBytes(Ext.pass.Substring(0, 8));
             caster = new Thread(Cast);
             bgw = new BackgroundWorker();
             bgw.DoWork += SendUpdates;
@@ -86,7 +88,7 @@ namespace ScreenCapturing
                 drawing.Show();
                 drawing.Top = Bottom;
                 drawing.Left = Right - 230;
-                todraw = new Bitmap(pbpaintboard.Width, pbpaintboard.Height, quality);
+                todraw = new Bitmap(pbpaintboard.Width, pbpaintboard.Height, PixelFormat.Format24bppRgb);
                 using (Graphics g = Graphics.FromImage(todraw))
                     g.CopyFromScreen(Left + 2, Top + 2, 0, 0, new Size(pbpaintboard.Width, pbpaintboard.Height), CopyPixelOperation.SourceCopy);
                 pbpaintboard.Image = todraw;
@@ -152,12 +154,13 @@ namespace ScreenCapturing
             Casting = !Casting;
             CastingTouglebtn.Image = Casting ? Resources.pause : Resources.play;
         }
-        private void SendUpdates(object sender, DoWorkEventArgs e)
+        private async void SendUpdates(object sender, DoWorkEventArgs e)
         {
             while (true)
             {
                 if (!Casting) return;
                 if (srclist.Count == 0) continue;
+                LastSent = DateTime.Now;
                 using (Bitmap src = srclist[srclist.Count - 1])
                 {
                     srclist.Clear();
@@ -178,16 +181,18 @@ namespace ScreenCapturing
                                         sa[i, j].Save(ms, ImageFormat.Jpeg);
                                         string base64 = Convert.ToBase64String(ms.ToArray());
                                         if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
-                                        connection.InvokeAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
+                                        await connection.SendAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
                                     }
                                 }
                             }
                         }
                     }
                 }
+                var time = TimeSpan.FromMilliseconds(1000 / FPSRate) - (DateTime.Now - LastSent);
+                if (time > TimeSpan.FromMilliseconds(1)) Thread.Sleep(time);
             }
         }
-
+        DateTime LastSent;
         void Cast()
         {
             while (connection.State == HubConnectionState.Connected)
@@ -249,6 +254,12 @@ namespace ScreenCapturing
         {
             sc.ConnectToServer();
             bgw.Dispose();
+            //chat.Close();
+            //chat.Dispose();
+            //c.Close();
+            //c.Dispose();
+            //drawing.Close();
+            //drawing.Dispose();
             if (caster != null)
             {
                 caster.Suspend();

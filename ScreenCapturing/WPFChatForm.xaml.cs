@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -37,7 +40,7 @@ namespace ScreenCapturing
             sndr.Foreground = (sender == "Teacher")?Brushes.DarkGreen:Brushes.DarkGray;
             container.MouseDoubleClick += Container_MouseDoubleClick;
             TextBlock mesg = new TextBlock();
-            mesg.Text = Ext.Encoded(message);
+            mesg.Text = DESDecrypt(message);
             mesg.TextWrapping = TextWrapping.Wrap;
             mesg.FontSize = 16;
             mesg.FontFamily = new FontFamily("Times New Roman");
@@ -86,7 +89,7 @@ namespace ScreenCapturing
         {
             if (MessageTextBox.Text.Trim() != string.Empty)
             {
-                Form1.connection.InvokeAsync("newMessage", Ext.Encoded(MessageTextBox.Text.Trim()));
+                Form1.connection.SendAsync("newMessage", DESEncrypt(MessageTextBox.Text.Trim()));
                 MessageTextBox.Text = "";
             }
         }
@@ -97,9 +100,36 @@ namespace ScreenCapturing
             MessageTextBox.Focus();
             if (e.Key == Key.Enter && MessageTextBox.Text.Trim() != string.Empty)
             {
-                Form1.connection.InvokeAsync("newMessage",Ext.Encoded(MessageTextBox.Text.Trim()));
+                Form1.connection.SendAsync("newMessage",DESEncrypt(MessageTextBox.Text.Trim()));
                 MessageTextBox.Text = "";
             }
+        }
+        public static byte[] key;
+        static string DESEncrypt(string original)
+        {
+            DESCryptoServiceProvider cryptoProvider = new DESCryptoServiceProvider();
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoProvider.CreateEncryptor(key, key), CryptoStreamMode.Write);
+                using (StreamWriter writer = new StreamWriter(cryptoStream))
+                {
+                    writer.Write(original);
+                    writer.Flush();
+                    cryptoStream.FlushFinalBlock();
+                    writer.Flush();
+                    cryptoProvider.Dispose();
+                    return Convert.ToBase64String(memoryStream.GetBuffer(), 0, (int)memoryStream.Length);
+                }
+            }
+        }
+        static string DESDecrypt(string crypted)
+        {
+            DESCryptoServiceProvider cryptoProvider = new DESCryptoServiceProvider();
+            MemoryStream memoryStream = new MemoryStream(Convert.FromBase64String(crypted));
+            CryptoStream cryptoStream = new CryptoStream(memoryStream, cryptoProvider.CreateDecryptor(key, key), CryptoStreamMode.Read);
+            StreamReader reader = new StreamReader(cryptoStream);
+            return reader.ReadToEnd();
+
         }
         public void MessageTextBox_TextChanged(object sender, EventArgs e)
         {

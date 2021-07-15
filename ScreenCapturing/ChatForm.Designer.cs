@@ -50,7 +50,7 @@ namespace ScreenCapturing
             this.right_side.Dock = System.Windows.Forms.DockStyle.Right;
             this.right_side.Location = new System.Drawing.Point(329, 0);
             this.right_side.Name = "right_side";
-            this.right_side.Size = new System.Drawing.Size(3, 538);
+            this.right_side.Size = new System.Drawing.Size(2, 538);
             this.right_side.TabIndex = 3;
             this.right_side.MouseDown += new System.Windows.Forms.MouseEventHandler(this.d_MouseDown);
             this.right_side.MouseUp += new System.Windows.Forms.MouseEventHandler(this.d_MouseUp);
@@ -63,7 +63,7 @@ namespace ScreenCapturing
             this.bottom_side.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.bottom_side.Location = new System.Drawing.Point(0, 538);
             this.bottom_side.Name = "bottom_side";
-            this.bottom_side.Size = new System.Drawing.Size(332, 3);
+            this.bottom_side.Size = new System.Drawing.Size(332, 2);
             this.bottom_side.TabIndex = 4;
             this.bottom_side.MouseDown += new System.Windows.Forms.MouseEventHandler(this.d_MouseDown);
             this.bottom_side.MouseUp += new System.Windows.Forms.MouseEventHandler(this.d_MouseUp);

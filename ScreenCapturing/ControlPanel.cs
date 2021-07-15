@@ -6,11 +6,12 @@ namespace ScreenCapturing
 {
     public partial class ControlPanel : Form
     {
-        static PixelFormat[] qualities = { PixelFormat.Format32bppArgb, PixelFormat.Format24bppRgb, PixelFormat.Format16bppRgb565};
+        static PixelFormat[] qualities = {PixelFormat.Format24bppRgb, PixelFormat.Format16bppRgb565};
         public ControlPanel()
         {
             InitializeComponent();
-            comboBox1.SelectedIndex = 2;
+            pbclose.Click += (s,e) => Hide();
+            comboBox1.SelectedIndex = 1;
             TopMost = true;
         }
 
@@ -50,7 +51,6 @@ namespace ScreenCapturing
         int posY;
         bool drag;
 
-        private void label3_Click(object sender, EventArgs e) => this.Hide();
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e) => 
             Form1.encrypted = checkBox1.CheckState == CheckState.Checked;

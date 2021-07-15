@@ -35,13 +35,14 @@ namespace ScreenCapturing
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.fpslable = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.percentLabel = new System.Windows.Forms.Label();
+            this.pbclose = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbclose)).BeginInit();
             this.SuspendLayout();
             // 
             // comboBox1
@@ -52,7 +53,6 @@ namespace ScreenCapturing
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "عالية",
-            "متوسطة",
             "ضعيفة"});
             this.comboBox1.Location = new System.Drawing.Point(12, 106);
             this.comboBox1.Name = "comboBox1";
@@ -106,19 +106,6 @@ namespace ScreenCapturing
             this.fpslable.Text = "10 FPS";
             this.fpslable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.Red;
-            this.label3.Font = new System.Drawing.Font("Arial Narrow", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(265, 9);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(17, 20);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "X";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
-            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -166,13 +153,23 @@ namespace ScreenCapturing
             this.percentLabel.Text = "100 %";
             this.percentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // pbclose
+            // 
+            this.pbclose.Image = global::ScreenCapturing.Properties.Resources.close;
+            this.pbclose.Location = new System.Drawing.Point(254, 12);
+            this.pbclose.Name = "pbclose";
+            this.pbclose.Size = new System.Drawing.Size(28, 26);
+            this.pbclose.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbclose.TabIndex = 17;
+            this.pbclose.TabStop = false;
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(294, 274);
+            this.Controls.Add(this.pbclose);
             this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.percentLabel);
             this.Controls.Add(this.fpslable);
@@ -191,6 +188,7 @@ namespace ScreenCapturing
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ControlPanel_MouseUp);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbclose)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -203,10 +201,10 @@ namespace ScreenCapturing
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label fpslable;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Label percentLabel;
+        private System.Windows.Forms.PictureBox pbclose;
     }
 }
