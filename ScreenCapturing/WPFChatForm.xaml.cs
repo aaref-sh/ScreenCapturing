@@ -21,7 +21,7 @@ namespace ScreenCapturing
         public WPFChatForm()
         {
             InitializeComponent();
-            sendimg.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + "/Resources/ic_menu_send.png"));
+            //sendimg.Source = new BitmapImage(new Uri(AppDomain.CurrentDomain.BaseDirectory + "/Resources/ic_menu_send.png"));
         }
         public void adds() => Form1.connection.On<string, string>("newMessage", NewMessage);
         void NewMessage(string sender,string message)

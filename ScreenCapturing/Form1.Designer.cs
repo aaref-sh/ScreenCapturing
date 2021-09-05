@@ -160,7 +160,7 @@ namespace ScreenCapturing
             this.CastingTouglebtn.Image = global::ScreenCapturing.Properties.Resources.play;
             this.CastingTouglebtn.Location = new System.Drawing.Point(168, 0);
             this.CastingTouglebtn.Name = "CastingTouglebtn";
-            this.CastingTouglebtn.Size = new System.Drawing.Size(24, 24);
+            this.CastingTouglebtn.Size = new System.Drawing.Size(24, 23);
             this.CastingTouglebtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.CastingTouglebtn.TabIndex = 14;
             this.CastingTouglebtn.TabStop = false;
@@ -171,7 +171,7 @@ namespace ScreenCapturing
             this.pictureBox3.Image = global::ScreenCapturing.Properties.Resources.close;
             this.pictureBox3.Location = new System.Drawing.Point(142, 0);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(24, 24);
+            this.pictureBox3.Size = new System.Drawing.Size(24, 23);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 14;
             this.pictureBox3.TabStop = false;
@@ -180,7 +180,7 @@ namespace ScreenCapturing
             // pbmic
             // 
             this.pbmic.Image = ((System.Drawing.Image)(resources.GetObject("pbmic.Image")));
-            this.pbmic.Location = new System.Drawing.Point(35, 1);
+            this.pbmic.Location = new System.Drawing.Point(35, 0);
             this.pbmic.Name = "pbmic";
             this.pbmic.Size = new System.Drawing.Size(24, 22);
             this.pbmic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -193,7 +193,7 @@ namespace ScreenCapturing
             this.pictureBox2.Image = global::ScreenCapturing.Properties.Resources.settings;
             this.pictureBox2.Location = new System.Drawing.Point(115, 0);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(24, 24);
+            this.pictureBox2.Size = new System.Drawing.Size(24, 23);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 13;
             this.pictureBox2.TabStop = false;
