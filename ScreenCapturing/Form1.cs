@@ -181,7 +181,7 @@ namespace ScreenCapturing
                                         sa[i, j].Save(ms, ImageFormat.Jpeg);
                                         string base64 = Convert.ToBase64String(ms.ToArray());
                                         if (encrypted) base64 = Ext.Encoded(base64.Substring(0, 200)) + base64.Substring(200);
-                                        await connection.SendAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
+                                        _ = connection.SendAsync("UpdateScreen", base64, i, j, encrypted, sa[i, j].Height, sa[i, j].Width);
                                     }
                                 }
                             }
@@ -189,7 +189,7 @@ namespace ScreenCapturing
                     }
                 }
                 var time = TimeSpan.FromMilliseconds(1000 / FPSRate) - (DateTime.Now - LastSent);
-                if (time > TimeSpan.FromMilliseconds(1)) Thread.Sleep(time);
+                if (time > TimeSpan.FromMilliseconds(0)) Thread.Sleep(time);
             }
         }
         DateTime LastSent;
