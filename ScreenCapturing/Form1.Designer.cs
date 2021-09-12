@@ -146,6 +146,7 @@ namespace ScreenCapturing
             // 
             // pictureBox5
             // 
+            this.pictureBox5.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox5.Image = global::ScreenCapturing.Properties.Resources.pen;
             this.pictureBox5.Location = new System.Drawing.Point(61, 0);
             this.pictureBox5.Name = "pictureBox5";
@@ -157,6 +158,7 @@ namespace ScreenCapturing
             // 
             // CastingTouglebtn
             // 
+            this.CastingTouglebtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CastingTouglebtn.Image = global::ScreenCapturing.Properties.Resources.play;
             this.CastingTouglebtn.Location = new System.Drawing.Point(168, 0);
             this.CastingTouglebtn.Name = "CastingTouglebtn";
@@ -168,6 +170,7 @@ namespace ScreenCapturing
             // 
             // pictureBox3
             // 
+            this.pictureBox3.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox3.Image = global::ScreenCapturing.Properties.Resources.close;
             this.pictureBox3.Location = new System.Drawing.Point(142, 0);
             this.pictureBox3.Name = "pictureBox3";
@@ -179,6 +182,7 @@ namespace ScreenCapturing
             // 
             // pbmic
             // 
+            this.pbmic.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pbmic.Image = ((System.Drawing.Image)(resources.GetObject("pbmic.Image")));
             this.pbmic.Location = new System.Drawing.Point(35, 0);
             this.pbmic.Name = "pbmic";
@@ -190,6 +194,7 @@ namespace ScreenCapturing
             // 
             // pictureBox2
             // 
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox2.Image = global::ScreenCapturing.Properties.Resources.settings;
             this.pictureBox2.Location = new System.Drawing.Point(115, 0);
             this.pictureBox2.Name = "pictureBox2";
@@ -201,6 +206,7 @@ namespace ScreenCapturing
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox1.Image = global::ScreenCapturing.Properties.Resources.Race5b6ada15b7f741d0a45499d679626;
             this.pictureBox1.Location = new System.Drawing.Point(85, 1);
             this.pictureBox1.Name = "pictureBox1";
@@ -212,6 +218,7 @@ namespace ScreenCapturing
             // 
             // pbspeaker
             // 
+            this.pbspeaker.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pbspeaker.Image = global::ScreenCapturing.Properties.Resources.su;
             this.pbspeaker.Location = new System.Drawing.Point(1, 0);
             this.pbspeaker.Name = "pbspeaker";
@@ -236,7 +243,7 @@ namespace ScreenCapturing
             // 
             // pbpaintboard
             // 
-            this.pbpaintboard.Cursor = System.Windows.Forms.Cursors.Cross;
+            this.pbpaintboard.Cursor = System.Windows.Forms.Cursors.Default;
             this.pbpaintboard.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pbpaintboard.Location = new System.Drawing.Point(2, 2);
             this.pbpaintboard.Name = "pbpaintboard";
