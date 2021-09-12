@@ -245,7 +245,6 @@ namespace ScreenCapturing
             this.pbpaintboard.TabIndex = 10;
             this.pbpaintboard.TabStop = false;
             this.pbpaintboard.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form_MouseDown);
-            this.pbpaintboard.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form_MouseMove);
             this.pbpaintboard.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form_MouseUp);
             // 
             // Form1
@@ -267,7 +266,6 @@ namespace ScreenCapturing
             this.TransparencyKey = System.Drawing.Color.DarkGray;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form_MouseUp);
             this.panel4.ResumeLayout(false);
             this.panel1.ResumeLayout(false);

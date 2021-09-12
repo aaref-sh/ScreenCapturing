@@ -4,9 +4,11 @@ using ScreenCapturing.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -28,7 +30,6 @@ namespace ScreenCapturing
         ControlPanel c;
         ChatForm chat;
         StreamClient sc;
-        Drawing drawing;
         int port;
         bool mic_muted = false;
         BackgroundWorker bgw;
@@ -68,7 +69,6 @@ namespace ScreenCapturing
             port = await connection.InvokeAsync<int>("getport", group);
             c = new ControlPanel();
             chat = new ChatForm();
-            drawing = new Drawing();
             Ext.pass = group;
             WPFChatForm.key = ASCIIEncoding.ASCII.GetBytes(Ext.pass.Substring(0, 8));
             caster = new Thread(Cast);
@@ -80,26 +80,41 @@ namespace ScreenCapturing
             sc.Init();
             sc.ConnectToServer();
         }
+        Process pen = null;
         void drawingbtn_Click(Object sender, EventArgs e)
         {
-            if (!painting)
+            if (pen == null)
             {
-                painting = true;
-                drawing.Show();
-                drawing.Top = Bottom;
-                drawing.Left = Right - 230;
-                todraw = new Bitmap(pbpaintboard.Width, pbpaintboard.Height, PixelFormat.Format24bppRgb);
-                using (Graphics g = Graphics.FromImage(todraw))
-                    g.CopyFromScreen(Left + 2, Top + 2, 0, 0, new Size(pbpaintboard.Width, pbpaintboard.Height), CopyPixelOperation.SourceCopy);
-                pbpaintboard.Image = todraw;
-                clean = (Bitmap)todraw.Clone();
+                var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\InkPen.exe";
+                pen = new Process();
+                pen.StartInfo.FileName = path;
+                pen.Start();
             }
             else
             {
-                painting = false;
-                pbpaintboard.Image = null;
-                drawing.Hide();
+                pen.Kill();
+                pen.Dispose();
+                pen = null;
             }
+
+            //if (!painting)
+            //{
+            //    painting = true;
+            //    drawing.Show();
+            //    drawing.Top = Bottom;
+            //    drawing.Left = Right - 230;
+            //    todraw = new Bitmap(pbpaintboard.Width, pbpaintboard.Height, PixelFormat.Format24bppRgb);
+            //    using (Graphics g = Graphics.FromImage(todraw))
+            //        g.CopyFromScreen(Left + 2, Top + 2, 0, 0, new Size(pbpaintboard.Width, pbpaintboard.Height), CopyPixelOperation.SourceCopy);
+            //    pbpaintboard.Image = todraw;
+            //    clean = (Bitmap)todraw.Clone();
+            //}
+            //else
+            //{
+            //    painting = false;
+            //    pbpaintboard.Image = null;
+            //    drawing.Hide();
+            //}
         }
         private void CaptureImage()
         {
@@ -236,7 +251,6 @@ namespace ScreenCapturing
                 using (Graphics g = Graphics.FromImage(pbpaintboard.Image))
                 {
                     g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                    g.DrawLine(new Pen(drawing.colorDialog1.Color, Drawing.thickness), lastPoint, e.Location);
                 }
                 pbpaintboard.Invalidate();
                 lastPoint = e.Location;
@@ -254,12 +268,12 @@ namespace ScreenCapturing
         {
             sc.ConnectToServer();
             bgw.Dispose();
-            //chat.Close();
-            //chat.Dispose();
-            //c.Close();
-            //c.Dispose();
-            //drawing.Close();
-            //drawing.Dispose();
+            if(pen!=null)
+            {
+                pen.Kill();
+                pen.Dispose();
+                pen = null;
+            }
             if (caster != null)
             {
                 caster.Suspend();
@@ -295,8 +309,6 @@ namespace ScreenCapturing
                 {
                     c.Left = Right;
                     c.Top = Top;
-                    drawing.Top = Bottom;
-                    drawing.Left = Right - 230;
                 }
             }
             Cursor = Cursors.Default;
@@ -310,7 +322,7 @@ namespace ScreenCapturing
             if (isMouseDown)
             {
                 Width = Cursor.Position.X - Left > 0 ? Cursor.Position.X - Left : 0;
-                if (c != null) { c.Left = Right; drawing.Left = Right - 230; }
+                if (c != null) { c.Left = Right;}
             }
         }
         private void Label1_MouseMove(object sender, MouseEventArgs e)
@@ -318,7 +330,7 @@ namespace ScreenCapturing
             if (isMouseDown)
             {
                 Height = Cursor.Position.Y - Top > 0 ? Cursor.Position.Y - Top : 0;
-                drawing.Top = Bottom;
+                
             }
         }
         private void L2_MouseMove(object sender, MouseEventArgs e)
@@ -331,8 +343,6 @@ namespace ScreenCapturing
                 {
                     c.Left = Right;
                     c.Top = Top;
-                    drawing.Top = Bottom;
-                    drawing.Left = Right - 230;
                 }
 
             }
