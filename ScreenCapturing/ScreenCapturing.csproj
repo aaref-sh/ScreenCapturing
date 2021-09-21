@@ -352,6 +352,7 @@
     <None Include="Resources\Race5b6ada15b7f741d0a45499d679626.png" />
     <None Include="Resources\settings.png" />
     <None Include="Resources\close.png" />
+    <Content Include="InkPen.exe" />
     <Content Include="logo %282%29.ico" />
     <Content Include="logo2.ico" />
     <Content Include="Resources\chatbg.jpg" />
