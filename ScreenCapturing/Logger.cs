@@ -30,7 +30,7 @@ namespace ScreenCapturing
             session_list.Items.Clear();
             try
             {
-                var response = Http.Post("http://"+URL+"/api/Rooms/GetRooms", new NameValueCollection() {});
+                var response = Http.Post("http://"+URL+":5000/api/Rooms/GetRooms", new NameValueCollection() {});
                 string result = Encoding.UTF8.GetString(response);
                 SessionList = Json.Decode<List<string>>(result);
                 foreach (var session in SessionList) session_list.Items.Add(session);
@@ -68,7 +68,7 @@ namespace ScreenCapturing
                 string myJson = "{\"room_name\": \"" + room_name + "\"}";
                 using (var client = new HttpClient())
                 {
-                    var response = await client.PostAsync("http://" + URL + "/api/Rooms/" + action,
+                    var response = await client.PostAsync("http://" + URL + ":5000/api/Rooms/" + action,
                         new StringContent(myJson, Encoding.UTF8, "application/json"));
                     if (action == "CreateRoom") if (!bool.Parse(response.Content.ReadAsStringAsync().Result)) MessageBox.Show("فشل إنشاء المحاضرة");
                     Get_sessions();

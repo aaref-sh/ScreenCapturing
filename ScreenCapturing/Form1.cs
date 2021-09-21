@@ -59,7 +59,7 @@ namespace ScreenCapturing
         private async void ConfigSignalRConnection()
         {
             connection = new HubConnectionBuilder()
-                .WithUrl("http://" + Logger.URL + "/CastHub")
+                .WithUrl("http://" + Logger.URL + ":5000/CastHub")
                 .WithAutomaticReconnect()
                 .Build();
             await connection.StartAsync();
