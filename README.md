@@ -8,4 +8,4 @@ Features:
  - mic/speaker control 
  - etc...
 <hr style="color:blue">
-<img src="https://github.com/aaref-sh/ScreenCapturing/blob/master/pics/app_preview.gif" alt="Preview the game">
+<img src="https://github.com/aaref-sh/ScreenCapturing/blob/master/app_preview.gif" alt="Preview the game">
