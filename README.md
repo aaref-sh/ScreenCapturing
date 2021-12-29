@@ -1,5 +1,6 @@
 # ScreenCapturing
 This is a teacher application of my graduation project - Online session platform
+
 Features:
  - enable/disable stream encryption 
  - control FPS rate
